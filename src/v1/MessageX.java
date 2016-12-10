@@ -1,5 +1,13 @@
 package v1;
 
-public class MessageX {
+import jus.poc.prodcons.Message;
 
+public class MessageX implements Message {
+	private String contenu ; 
+	
+	
+	public MessageX(String c){
+		contenu = c ; 
+	}
+	
 }

@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
-<comment>
-Cette configuration ...
-</comment>
+<comment>Configuration pour la version 1</comment>
 <entry key="nbProd">1</entry>
 <entry key="nbCons">10</entry>
 <entry key="nbBuffer">1</entry>
