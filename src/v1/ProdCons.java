@@ -69,9 +69,10 @@ public class ProdCons implements Tampon {
 		nbProd-- ; 
 	}
 	
+	// return vrai si il n'y a plus de pproducteur et que le bufer est vide
 	public synchronized boolean fin() {
 		boolean resultat = (nbProd == 0) && ( nbplein == 0 );
-		
+		System.out.println("resultat fin = "+ resultat);
 		//On s'assure qu'il n'y pas de nouveau producteur crée. 
 		if(resultat){
 			notifyAll();

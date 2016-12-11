@@ -5,7 +5,7 @@ import jus.poc.prodcons.*;
 
 public class TestProdCons extends Simulateur {
 	private Observateur Ob ; 
-	private ProdCons buffeur ;
+	private ProdCons buffer ;
 	private ArrayList<Producteur> lprod ;
 	private ArrayList<Consommateur> lcons ;
 	
@@ -23,17 +23,56 @@ public class TestProdCons extends Simulateur {
 	protected static int nombreMoyenNbExemplaire;
 	protected static int deviationNombreMoyenNbExemplaire;
 	
+	
+	//On remplie dans cette classe les deux listes lcons et lprod par le nb voulue
 	public TestProdCons(Observateur observateur){
 		super(observateur);
+		Ob = observateur;
 		init("options.xml");
 		
+		buffer = new ProdCons(nbBuffer);
+		
+		lprod = new ArrayList<>();
+		for(int i = 0 ; i< nbProd ; i ++ ){
+			try {
+				lprod.add(new Producteur( buffer,
+						Ob,tempsMoyenProduction, deviationNombreMoyenDeProduction,
+						nombreMoyenDeProduction, deviationNombreMoyenDeProduction));
+			} catch (ControlException e) {
+				System.out.println("erreur à la création de Producteur");
+				e.printStackTrace();
+			}
+			
+		}
+		
+		lcons = new ArrayList<>();
+		for(int i = 0 ; i< nbCons ; i ++ ){
+			try {
+				lcons.add(new Consommateur(Ob, tempsMoyenConsommation,
+						deviationTempsMoyenConsommation, buffer));
+			} catch (ControlException e) {
+				System.out.println("erreur création consomateur");
+				e.printStackTrace();
+			}
+		}
 		
 	}
 	
 	
-	
+	// On lance chaqu'un des consomateurs dans lcons et producteur dans lprod  
 	protected void run() throws Exception{
-			
+		
+		for (int i=0;i<nbProd;i++){
+//			if (lprod.get(i)==null) System.out.println("on peut pas acceder à un Prdo\n");
+//			else System.out.println(lprod.get(i).toString());
+			lprod.get(i).start();
+		}
+		for (int i=0;i<nbCons;i++){
+//			System.out.println(c.get(i).toString());
+			lcons.get(i).start();
+		}	
+		
+		
 	}	
 	
 //	protected <type> option;
@@ -58,6 +97,7 @@ public class TestProdCons extends Simulateur {
 		nbProd = option.get("nbProd");
 		System.out.println("nb_prod =" + nbProd);
 		nbCons = option.get("nbCons");
+		System.out.println("nbCons = "+ nbCons);
 		nbBuffer = option.get("nbBuffer");
 		tempsMoyenProduction = option.get("tempsMoyenProduction");
 		deviationTempsMoyenProduction = option.get("deviationTempsMoyenProduction");

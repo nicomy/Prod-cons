@@ -14,10 +14,10 @@ public class Producteur extends Acteur implements _Producteur{
 	private Aleatoire alea ; 
 	
 
-	protected Producteur(int type,ProdCons buf, Observateur observateur, int moyenneTempsDeTraitement,
+	protected Producteur(ProdCons buf, Observateur observateur, int moyenneTempsDeTraitement,
 			int deviationTempsDeTraitement, int moyenne, int deviation) throws ControlException {
 		
-		super(type, observateur, moyenneTempsDeTraitement, deviationTempsDeTraitement);
+		super(Acteur.typeProducteur, observateur, moyenneTempsDeTraitement, deviationTempsDeTraitement);
 		
 		// On génère alétoirement le nombre de messages à faire 
 		nbMessageafaire = new Aleatoire(moyenne, deviation).next() ;
@@ -38,6 +38,8 @@ public class Producteur extends Acteur implements _Producteur{
 		
 		for(int i = 0 ; i < nbMessageafaire ; i++  ){
 			MessageX m = new MessageX("contenu");
+			
+			buffer.nouveau_prod();
 			
 			int temp= alea.valeur(moyenneTempsDeTraitement(), deviationTempsDeTraitement());
 			
@@ -62,6 +64,6 @@ public class Producteur extends Acteur implements _Producteur{
 			
 			
 		}
-		
+		buffer.fin_prod();
 	}
 }
