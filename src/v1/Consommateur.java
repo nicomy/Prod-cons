@@ -1,18 +1,22 @@
 package v1;
 
 import jus.poc.prodcons.Acteur;
+import jus.poc.prodcons.Aleatoire;
 import jus.poc.prodcons.ControlException;
 import jus.poc.prodcons.Observateur;
 import jus.poc.prodcons._Consommateur;
 
 public class Consommateur extends Acteur implements _Consommateur {
 	private int nbMessagelu ; 
+	private ProdCons buffer ; 
 	
 	protected Consommateur(int type, Observateur observateur, int moyenneTempsDeTraitement,
-			int deviationTempsDeTraitement) throws ControlException {
+			int deviationTempsDeTraitement,ProdCons buf) throws ControlException {
 		super(type, observateur, moyenneTempsDeTraitement, deviationTempsDeTraitement);
 		
+		nbMessagelu = 0 ; 
 		
+		buffer = buf ; 
 	}
 
 	@Override
@@ -21,6 +25,16 @@ public class Consommateur extends Acteur implements _Consommateur {
 	}
 	
 	public void run(){
+		
+		MessageX m ; 
+		
+		// On simule un temps de calcul une fois le message lu.
+		Aleatoire alea = new Aleatoire(moyenneTempsDeTraitement(), deviationTempsDeTraitement());
+		
+		while(buffer.fin()){
+			
+		}
+		
 		
 	}
 	

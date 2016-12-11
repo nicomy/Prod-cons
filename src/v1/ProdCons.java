@@ -9,7 +9,7 @@ public class ProdCons implements Tampon {
 	// nbplein correspond au nombre de ressource dans le buffer.
 	private int nbplein, N ; // N est le nombre maximum de messages que peut contenir le buffer. 
 	 
-	private int in = 0 , out = 0 ; 
+	private int in = 0 , out = 0,nbProd = 0 ; 
 	
 	
 	private Message[] buffer ;
@@ -22,15 +22,12 @@ public class ProdCons implements Tampon {
 	}
 
 	
-	
 	public int enAttente() {
-		
-		
-		return 0;
+		return nbplein;
 	}
 	
 	// fonction permettant de retirer une ressource dans le tampon. 
-	public Message get(_Consommateur c) throws Exception, InterruptedException {
+	public synchronized Message get(_Consommateur c) throws Exception, InterruptedException {
 		// tant qu'il n'y a rien à lire le processus attend. 
 		while (nbplein == 0 ) wait() ; 
 		
@@ -41,11 +38,12 @@ public class ProdCons implements Tampon {
 		//on décremente le nombre de ressource dispo
 		nbplein -- ;
 		
+		notifyAll();
 		return m;
 	}
 	
 	// fonction permettant de déposer une ressource dans le tampon. 
-	public void put(_Producteur p, Message m) throws Exception, InterruptedException {
+	public synchronized void put(_Producteur p, Message m) throws Exception, InterruptedException {
 		//si le buffer est plein on attend : 
 		while(nbplein == N ) wait() ;
 		
@@ -56,10 +54,29 @@ public class ProdCons implements Tampon {
 		//on incremente le nombre de ressource dispo 
 		nbplein ++ ; 
 		
+		notifyAll();
 	}
 	
 
 	public int taille() {
 		return N;
+	}
+
+	public synchronized void nouveau_prod(){
+		nbProd++;
+	}
+	public synchronized void fin_prod(){
+		nbProd-- ; 
+	}
+	
+	public synchronized boolean fin() {
+		boolean resultat = (nbProd == 0) && ( nbplein == 0 );
+		
+		//On s'assure qu'il n'y pas de nouveau producteur crée. 
+		if(resultat){
+			notifyAll();
+		}
+		
+		return (nbProd == 0) && ( nbplein == 0 );
 	} 
 }

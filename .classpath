@@ -2,7 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
-	<classpathentry kind="lib" path="/media/ombresocial/Documents commun/travail/java/jus.poc.prodcons/ProdCons.jar">
+	<classpathentry kind="lib" path="D:/travail/SE/Prod-cons/ProdCons.jar" sourcepath="Doc/jus/poc/prodcons/class-use">
 		<attributes>
 			<attribute name="javadoc_location" value="jar:file:/home/ombresocial/Documents/travail/SE/Prod-cons/Doc.zip!/"/>
 		</attributes>
