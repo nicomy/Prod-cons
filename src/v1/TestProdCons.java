@@ -98,7 +98,7 @@ public class TestProdCons extends Simulateur {
 		System.out.println("nb_prod =" + nbProd);
 		nbCons = option.get("nbCons");
 		System.out.println("nbCons = "+ nbCons);
-		nbBuffer = option.get("nbBuffer");
+		nbBuffer = option.get("nbBuffer");b
 		tempsMoyenProduction = option.get("tempsMoyenProduction");
 		deviationTempsMoyenProduction = option.get("deviationTempsMoyenProduction");
 		tempsMoyenConsommation = option.get("tempsMoyenConsommation");
