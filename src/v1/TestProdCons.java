@@ -35,11 +35,11 @@ public class TestProdCons extends Simulateur {
 		lprod = new ArrayList<>();
 		for(int i = 0 ; i< nbProd ; i ++ ){
 			try {
-				lprod.add(new Producteur( buffer,
+				lprod.add(new Producteur(i, buffer,
 						Ob,tempsMoyenProduction, deviationNombreMoyenDeProduction,
 						nombreMoyenDeProduction, deviationNombreMoyenDeProduction));
 			} catch (ControlException e) {
-				System.out.println("erreur à la création de Producteur");
+				System.out.println("erreur a la creation de Producteur");
 				e.printStackTrace();
 			}
 			
@@ -48,10 +48,10 @@ public class TestProdCons extends Simulateur {
 		lcons = new ArrayList<>();
 		for(int i = 0 ; i< nbCons ; i ++ ){
 			try {
-				lcons.add(new Consommateur(Ob, tempsMoyenConsommation,
+				lcons.add(new Consommateur(i,Ob, tempsMoyenConsommation,
 						deviationTempsMoyenConsommation, buffer));
 			} catch (ControlException e) {
-				System.out.println("erreur création consomateur");
+				System.out.println("erreur crï¿½ation consomateur");
 				e.printStackTrace();
 			}
 		}
@@ -63,7 +63,7 @@ public class TestProdCons extends Simulateur {
 	protected void run() throws Exception{
 		
 		for (int i=0;i<nbProd;i++){
-//			if (lprod.get(i)==null) System.out.println("on peut pas acceder à un Prdo\n");
+//			if (lprod.get(i)==null) System.out.println("on peut pas acceder ï¿½ un Prdo\n");
 //			else System.out.println(lprod.get(i).toString());
 			lprod.get(i).start();
 		}

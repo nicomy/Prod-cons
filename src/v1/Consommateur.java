@@ -1,5 +1,8 @@
 package v1;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import jus.poc.prodcons.Acteur;
 import jus.poc.prodcons.Aleatoire;
 import jus.poc.prodcons.ControlException;
@@ -10,14 +13,16 @@ public class Consommateur extends Acteur implements _Consommateur {
 	private int nbMessagelu ; 
 	private ProdCons buffer ; 
 	private Aleatoire gen_temps ; 
+	private int idConsommateur ; 
 	
-	protected Consommateur( Observateur observateur, int moyenneTempsDeTraitement,
+	protected Consommateur(int id , Observateur observateur, int moyenneTempsDeTraitement,
 			int deviationTempsDeTraitement,ProdCons buf) throws ControlException {
 		super(Acteur.typeConsommateur, observateur, moyenneTempsDeTraitement, deviationTempsDeTraitement);
 		
 		nbMessagelu = 0 ; 
 		gen_temps = new Aleatoire(moyenneTempsDeTraitement, deviationTempsDeTraitement);
-		buffer = buf ; 
+		buffer = buf ;
+		idConsommateur  =id ; 
 	}
 
 	@Override
@@ -31,14 +36,15 @@ public class Consommateur extends Acteur implements _Consommateur {
 		int temps; 
 		// On simule un temps de calcul une fois le message lu.
 		Aleatoire alea = new Aleatoire(moyenneTempsDeTraitement(), deviationTempsDeTraitement());
-		
+		System.out.println("Consomateur "+ idConsommateur+ " rentre dans la game");
 		while(buffer.fin()){
 			
 			try {
 				m = (MessageX) buffer.get(this);
+				blabla(m);
 				nbMessagelu++ ; 
 			} catch (Exception e) {
-				System.out.println(" problème récupération du message");
+				System.out.println(" problï¿½me rï¿½cupï¿½ration du message");
 				e.printStackTrace();
 			}
 			temps = gen_temps.next();
@@ -51,8 +57,12 @@ public class Consommateur extends Acteur implements _Consommateur {
 			}
 			
 		}
-		
-		
+	System.out.println("Consomateur "+ idConsommateur+ " sort de la game");
 	}
 	
+	public void blabla(MessageX m ){
+		String time = new SimpleDateFormat("mm:ss:S").format(new Date());
+		System.out.println(time +": Je suis le consomateur d'id "+ idConsommateur + ". Je lis le message"+ m.get_id()+"\n" );
+	}	
+			
 }
