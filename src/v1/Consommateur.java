@@ -48,11 +48,11 @@ public class Consommateur extends Acteur implements _Consommateur {
 			try {
 				
 				// le synchronise sert pour afficher dans le bon odre les éléments. 
-//				synchronized (buffer) {
+				synchronized (buffer) {
 				
 					m = (MessageX) buffer.get(this);
 					blabla(m);
-//				}
+				}
 				nbMessagelu++ ; 
 			} catch (Exception e) {
 				System.out.println(" probleme recuperation du message");

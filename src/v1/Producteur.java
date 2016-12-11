@@ -60,7 +60,6 @@ public class Producteur extends Acteur implements _Producteur{
 				synchronized (buffer) {
 					buffer.put(this, m);
 					blabla(m);
-					
 				}
 					
 			} catch (InterruptedException e) {
