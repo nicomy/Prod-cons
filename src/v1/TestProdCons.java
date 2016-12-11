@@ -32,6 +32,7 @@ public class TestProdCons extends Simulateur {
 		
 		buffer = new ProdCons(nbBuffer);
 		
+		//creation des porducteurs
 		lprod = new ArrayList<>();
 		for(int i = 0 ; i< nbProd ; i ++ ){
 			try {
@@ -45,6 +46,7 @@ public class TestProdCons extends Simulateur {
 			
 		}
 		
+		//mise en place des consomateurs
 		lcons = new ArrayList<>();
 		for(int i = 0 ; i< nbCons ; i ++ ){
 			try {
