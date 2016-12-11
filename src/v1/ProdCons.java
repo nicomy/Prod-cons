@@ -28,26 +28,26 @@ public class ProdCons implements Tampon {
 	
 	// fonction permettant de retirer une ressource dans le tampon. 
 	public synchronized Message get(_Consommateur c) throws Exception, InterruptedException {
-		// tant qu'il n'y a rien à lire le processus attend. 
+		// tant qu'il n'y a rien a lire le processus attend. 
 		while (nbplein == 0 ) wait() ; 
 		
 		// gestion du buffer
 		Message m = buffer[out];
 		out = (out++) % N ;
 		
-		//on décremente le nombre de ressource dispo
+		//on dÃ©cremente le nombre de ressource dispo
 		nbplein -- ;
 		
 		notifyAll();
 		return m;
 	}
 	
-	// fonction permettant de déposer une ressource dans le tampon. 
+	// fonction permettant de dï¿½poser une ressource dans le tampon. 
 	public synchronized void put(_Producteur p, Message m) throws Exception, InterruptedException {
 		//si le buffer est plein on attend : 
 		while(nbplein == N ) wait() ;
 		
-		//mettre à jour le buffer 
+		//mettre ï¿½ jour le buffer 
 		buffer[in] = m ;
 		in = (in +1) %N;
 		
@@ -63,17 +63,25 @@ public class ProdCons implements Tampon {
 	}
 
 	public synchronized void nouveau_prod(){
+		System.out.println("le poducteur "+ nbProd+" rentre dans le game");
 		nbProd++;
+//		System.out.println(nbProd);
+		
 	}
 	public synchronized void fin_prod(){
+		
 		nbProd-- ; 
+		System.out.println("le poducteur "+ nbProd+" sort de la game");
 	}
 	
 	// return vrai si il n'y a plus de pproducteur et que le bufer est vide
 	public synchronized boolean fin() {
-		boolean resultat = (nbProd == 0) && ( nbplein == 0 );
-		System.out.println("resultat fin = "+ resultat);
-		//On s'assure qu'il n'y pas de nouveau producteur crée. 
+		boolean resultat = ((nbProd == 0) && ( nbplein == 0 ));
+		//System.out.println("resultat fin = "+ resultat);
+		
+		
+		
+		//On s'assure qu'il n'y pas de nouveau producteur crÃ©e. 
 		if(resultat){
 			notifyAll();
 		}

@@ -1,5 +1,8 @@
 package v1;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import jus.poc.prodcons.Acteur;
 import jus.poc.prodcons.Aleatoire;
 import jus.poc.prodcons.ControlException;
@@ -12,17 +15,20 @@ public class Producteur extends Acteur implements _Producteur{
 	private int nbMessageafaire ; 
 	private ProdCons buffer ; 
 	private Aleatoire alea ; 
+	private int idProducteur ; 
 	
 
-	protected Producteur(ProdCons buf, Observateur observateur, int moyenneTempsDeTraitement,
+	protected Producteur(int id, ProdCons buf, Observateur observateur, int moyenneTempsDeTraitement,
 			int deviationTempsDeTraitement, int moyenne, int deviation) throws ControlException {
 		
 		super(Acteur.typeProducteur, observateur, moyenneTempsDeTraitement, deviationTempsDeTraitement);
 		
-		// On génère alétoirement le nombre de messages à faire 
+		// On gï¿½nï¿½re alï¿½toirement le nombre de messages ï¿½ faire 
 		nbMessageafaire = new Aleatoire(moyenne, deviation).next() ;
 		
-		//on définit un objet alétoire pour indiquer quand envoyer un message.
+		idProducteur= id ;
+		
+		//on dï¿½finit un objet alï¿½toire pour indiquer quand envoyer un message.
 		alea = new Aleatoire(moyenneTempsDeTraitement,deviationTempsDeTraitement);
 		buffer = buf ; 
 		
@@ -36,10 +42,10 @@ public class Producteur extends Acteur implements _Producteur{
 
 	public void run(){
 		
+		buffer.nouveau_prod();
 		for(int i = 0 ; i < nbMessageafaire ; i++  ){
-			MessageX m = new MessageX("contenu");
+			MessageX m = new MessageX(i,"contenu");
 			
-			buffer.nouveau_prod();
 			
 			int temp= alea.valeur(moyenneTempsDeTraitement(), deviationTempsDeTraitement());
 			
@@ -52,6 +58,7 @@ public class Producteur extends Acteur implements _Producteur{
 			
 			try {
 				buffer.put(this, m);
+				blabla(m);
 			} catch (InterruptedException e) {
 				System.out.println("erreur de mise dans le tampon");
 				e.printStackTrace();
@@ -60,10 +67,15 @@ public class Producteur extends Acteur implements _Producteur{
 				e.printStackTrace();
 			}
 			
-			
-			
-			
 		}
 		buffer.fin_prod();
+	}
+	
+	
+	public void blabla(MessageX m ){
+		String time = new SimpleDateFormat("mm:ss:S").format(new Date());
+		System.out.println(time +": Je suis le produceur d'id "+ idProducteur + "j'envoi le message"+ m.get_id()+"\n" );
+		
+		
 	}
 }
