@@ -48,15 +48,9 @@ public class Consommateur extends Acteur implements _Consommateur {
 		while(!buffer.fin()){
 			
 			try {
-				
-				// le synchronise sert pour afficher dans le bon odre les éléments. 
-//				synchronized (buffer) {
-				
-//					m = (MessageX) buffer.get(this);
 					m = buffer.lire(this);
-					blabla(m);
-//				}
-				nbMessagelu++ ; 
+					nbMessagelu++ ; 
+			
 			} catch (Exception e) {
 				System.out.println(" probleme recuperation du message k"+ e);
 				e.printStackTrace();

@@ -15,7 +15,8 @@ public class ProdCons implements Tampon {
 	private Semaphore mutex ; 
 	private Semaphore RessourceALire ; 
 	private Semaphore Place ; 
-	private Semaphore ProdEnATtente;
+	private Semaphore ProdEnAttente;
+	private Semaphore ConsEnAttent ;
 	private Observateur Ob ; 
 	private Message[] buffer ;
 	private ArrayList<Consommateur> ConsServie ;
@@ -28,7 +29,8 @@ public class ProdCons implements Tampon {
 		mutex = new Semaphore(1);
 		RessourceALire = new Semaphore(0);
 		Place = new Semaphore(N);
-		ProdEnATtente = new Semaphore(0);
+		ProdEnAttente = new Semaphore(0);
+		ConsEnAttent = new Semaphore(0 );
 		Ob = observateur ; 
 		ConsServie =new ArrayList<>() ;
 		
@@ -36,7 +38,7 @@ public class ProdCons implements Tampon {
 
 	//gère la lecture mutliple du même message. 
 	public  MessageX lire(Consommateur c) throws InterruptedException, Exception{
-		System.out.println(" Cons " + ((Consommateur) c).get_id() + " est au debut ");
+//		System.out.println(" Cons " + ((Consommateur) c).get_id() + " est au debut ");
 	
 		MessageX m = null ;
 		ConsServie.add(c);
@@ -45,20 +47,26 @@ public class ProdCons implements Tampon {
 		
 		m.lecture();
 		
-		
 		//une fois le nombre de consomateur atteint on les réveillent pour qu'ils puissent 
-		//continuer leur activités
+		//continuer leurs activités
 		if(m.est_consomme()){
-			notifyAll();
+//			notifyAll();
+			
+			//On libère tous les consomateurs
+			for(int i = 0 ; i < ConsServie.size() ; i ++ ){
+				ConsEnAttent.V();
+			}
 			ConsServie.clear();
 			out = (out+ 1) % N ;
-			ProdEnATtente.V();
+			//on bloque les consomateurs
+			ProdEnAttente.V();
 			enAttente-- ; 
 		}
 		
 		//un consomateur ne peut pas poursuivre son activité tant que tous les messages n'ont pas été lu.
 		while(!m.est_consomme()){
-			wait();
+			//wait();
+			ConsEnAttent.P();
 		}
 		
 		return m ; 
@@ -68,37 +76,33 @@ public class ProdCons implements Tampon {
 	
 	// je pense pas qu'un synchronise soit necessaire car il est fait à l'appel de la fonction
 	public  void ecrire(Producteur p, MessageX m) throws InterruptedException, Exception{
-		put(p,m);
+		put (p,m);
 		System.out.println("le producteur " + p.get_id() + " à posé son message et va attendre") ;
-		ProdEnATtente.P();
+		ProdEnAttente.P();
 		System.out.println("le producteur " + p.get_id() + " a fini d'attendre") ;
 	}
 	
 	
 	// fonction permettant de retirer une ressource dans le tampon. 
-	public MessageX get(_Consommateur c) throws Exception, InterruptedException {
-		System.out.println(" Cons " + ((Consommateur) c).get_id() + " est au debut ");
+	public  MessageX get(_Consommateur c) throws Exception, InterruptedException {
+//		System.out.println(" Cons " + ((Consommateur) c).get_id() + " est au debut ");
+		
 		//test pour savoir s'il y'a des messages à lire
 		RessourceALire.P() ; 
 		MessageX m;
 		
 		// gestion du buffer protégé par les mutex
 		mutex.P();
-//		synchronized (this) {
-		System.out.println(" Cons " + ((Consommateur) c).get_id() + " avant de lire le message");
 			m = (MessageX) buffer[out];
 			Ob.retraitMessage(c, m);
-			//out = (out+ 1) % N ;
-			//enAttente-- ; 
-		System.out.println(" Cons " + ((Consommateur) c).get_id() + " après avoir lu le message ");
+			((Consommateur) c).blabla(m);
 		mutex.V();
-//		}
 		
 		//indique si le message est entièrement consommé qu'on a libéré une place dans le buffeur pour les un Thread Producteur.
 		if(m.est_consomme()) {
 			Place.V();
 		}
-		
+		System.out.println(" Cons " + ((Consommateur) c).get_id() + "sort de get");
 		return m;
 	}
 	
@@ -110,16 +114,18 @@ public class ProdCons implements Tampon {
 		
 		//section critique protiégé par les mutex
 		mutex.P();
-//		synchronized (this) {
 			Ob.depotMessage(p, m);
 			buffer[in] = m ;
 			in = (in +1) %N;
 			enAttente++ ;
-//		}
+			((Producteur) p).blabla((MessageX) m);
 		mutex.V();
 		
-		//indique qu'une ressource est disponible pour reveiller 
-		RessourceALire.V();
+		
+		//indique qu'une ressource est disponible et va reveiller si besoin les 
+		for(int i = 0 ; i < ((MessageX) m).get_NbExemplaire() ; i ++ ){
+			RessourceALire.V();
+		}
 	}
 	
 	public synchronized int enAttente() {
