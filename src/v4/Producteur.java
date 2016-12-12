@@ -53,7 +53,7 @@ public class Producteur extends Acteur implements _Producteur{
 		for(int i = 0 ; i < nbMessageafaire ; i++  ){
 			temps= alea.next();
 			NbInteration = nbMAlea.next();
-			MessageX m = new MessageX(i,"contenu du message ",NbInteration);
+			MessageX m = new MessageX(get_id()*100 + i,"contenu du message ",NbInteration);
 			try {
 				Ob.productionMessage(this, m, temps);
 			} catch (ControlException e2) {
