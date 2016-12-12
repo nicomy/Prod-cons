@@ -102,7 +102,7 @@ public class ProdCons implements Tampon {
 		if(m.est_consomme()) {
 			Place.V();
 		}
-		System.out.println(" Cons " + ((Consommateur) c).get_id() + "sort de get");
+//		System.out.println(" Cons " + ((Consommateur) c).get_id() + "sort de get");
 		return m;
 	}
 	

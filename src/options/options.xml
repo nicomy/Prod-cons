@@ -3,7 +3,7 @@
 <properties>
 <comment>Configuration</comment>
 <entry key="nbProd">2</entry>
-<entry key="nbCons">10</entry>
+<entry key="nbCons">12</entry>
 <entry key="nbBuffer">12</entry>
 <entry key="tempsMoyenProduction">100</entry>
 <entry key="deviationTempsMoyenProduction">40</entry>
