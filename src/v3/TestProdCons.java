@@ -20,8 +20,6 @@ public class TestProdCons extends Simulateur {
 	protected static int deviationTempsMoyenConsommation;
 	protected static int nombreMoyenDeProduction;
 	protected static int deviationNombreMoyenDeProduction;
-	protected static int nombreMoyenNbExemplaire;
-	protected static int deviationNombreMoyenNbExemplaire;
 	
 	
 	//On remplie dans cette classe les deux listes lcons et lprod par le nb voulue
@@ -118,8 +116,6 @@ public class TestProdCons extends Simulateur {
 		deviationTempsMoyenConsommation = option.get("deviationTempsMoyenConsommation");
 		nombreMoyenDeProduction = option.get("nombreMoyenDeProduction");
 		deviationNombreMoyenDeProduction = option.get("deviationNombreMoyenDeProduction");
-		nombreMoyenNbExemplaire = option.get("nombreMoyenNbExemplaire");
-		deviationNombreMoyenNbExemplaire = option.get("deviationNombreMoyenNbExemplaire");
 	}
 //	
 //	<option> = option.getProperty("option");
