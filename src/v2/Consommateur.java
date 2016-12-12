@@ -47,13 +47,10 @@ public class Consommateur extends Acteur implements _Consommateur {
 			
 			try {
 				
-				// le synchronise sert pour afficher dans le bon odre les éléments. 
-//				synchronized (buffer) {
+				m = (MessageX) buffer.get(this);
+				blabla(m);
+				if(m!=null)nbMessagelu++ ; 
 				
-					m = (MessageX) buffer.get(this);
-					blabla(m);
-//				}
-				nbMessagelu++ ; 
 			} catch (Exception e) {
 				System.out.println(" probleme recuperation du message");
 				e.printStackTrace();
@@ -75,7 +72,12 @@ public class Consommateur extends Acteur implements _Consommateur {
 	// cette fonction permet de dire que fait les consomateur
 	public void blabla(MessageX m ){
 		String time = new SimpleDateFormat("mm:ss:S").format(new Date());
-		System.out.println(time +": Je suis le consomateur d'id "+ idConsommateur + ". Je lis le message"+ m.get_id()+"\n" );
+		if(m!=null){
+			System.out.println(time +": Je suis le consomateur d'id "+ idConsommateur + ". Je lis le message"+ m.get_id()+"\n" );
+		}else{
+			System.out.println(time +": Je suis le consomateur d'id "+ idConsommateur + ". IL n'y a plus de message pour moi\n" );
+		}
+			
 	}	
 			
 }
