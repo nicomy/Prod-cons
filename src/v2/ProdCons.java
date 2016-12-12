@@ -96,7 +96,6 @@ public class ProdCons implements Tampon {
 		
 		//On s'assure qu'il n'y pas de nouveau producteur cree. 
 		if(resultat){
-			notifyAll();
 			RessourceALire.V();
 		}
 		
