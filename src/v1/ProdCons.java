@@ -47,10 +47,9 @@ public class ProdCons implements Tampon {
 				nbplein -- ;
 				
 			}else{ 		//si le programme à fini pendant que le consommateur attendait.
-				
 				m=null;
 			}
-			mc.notify(); // pas de question de famine ici, il n'y a plus rien à manger.
+			
 		}
 		synchronized(mp){nbvide++; mp.notifyAll();}
 		
@@ -93,7 +92,7 @@ public class ProdCons implements Tampon {
 	}
 	
 	// return vrai si il n'y a plus de pproducteur et que le bufer est vide
-	public synchronized boolean fin() {
+	public boolean fin() {
 		boolean resultat = ((nbProd == 0) && ( nbplein == 0 ));
 		//System.out.println("resultat fin = "+ resultat);
 		
@@ -101,7 +100,7 @@ public class ProdCons implements Tampon {
 		
 		//On s'assure qu'il n'y pas de nouveau producteur crée. 
 		if(resultat){
-			notifyAll();
+			synchronized(mc){mc.notifyAll();}
 		}
 		
 		return (nbProd == 0) && ( nbplein == 0 );

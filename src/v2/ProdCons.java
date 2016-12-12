@@ -43,7 +43,6 @@ public class ProdCons implements Tampon {
 			Place.V();
 		}else{
 			m=null;
-			RessourceALire.V();
 		}
 		
 		return m;
