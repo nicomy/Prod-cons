@@ -28,22 +28,23 @@ public class ProdCons implements Tampon {
 	// fonction permettant de retirer une ressource dans le tampon. 
 	public Message get(_Consommateur c) throws Exception, InterruptedException {
 		
-		//test pour savoir s'il y'a des messages à lire
+		//test pour savoir s'il y'a des messages ï¿½ lire
 		RessourceALire.P() ; 
 		Message m;
-			
-		// gestion du buffer protégé par les mutex
-		mutex.P();
-//		synchronized (this) {
-			
-			m = buffer[out];
-			out = (out+ 1) % N ;
-			enAttente-- ; 
-		mutex.V();
-//		}
 		
-		//indique qu'on a libéré une place dans le buffeur pour les un Thread Producteur.
-		Place.V();
+		if(!fin()){
+			// gestion du buffer protï¿½gï¿½ par les mutex
+			mutex.P();
+				m = buffer[out];
+				out = (out+ 1) % N ;
+				enAttente-- ; 
+			mutex.V();
+			//indique qu'on a libï¿½rï¿½ une place dans le buffeur pour un Thread Producteur.
+			Place.V();
+		}else{
+			m=null;
+			RessourceALire.V();
+		}
 		
 		return m;
 	}
@@ -54,7 +55,7 @@ public class ProdCons implements Tampon {
 		// on s'assure qu'il y a de la place pour y palcer une ressource 
 		Place.P() ;  
 		
-		//section critique protiégé par les mutex
+		//section critique protiï¿½gï¿½ par les mutex
 		mutex.P();
 //		synchronized (this) {
 			
@@ -96,7 +97,9 @@ public class ProdCons implements Tampon {
 		//On s'assure qu'il n'y pas de nouveau producteur cree. 
 		if(resultat){
 			notifyAll();
+			RessourceALire.V();
 		}
+		
 		return (nbProd == 0) && ( enAttente == 0 );
 	} 
 }
