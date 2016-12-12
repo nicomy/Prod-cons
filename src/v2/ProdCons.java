@@ -6,63 +6,71 @@ import jus.poc.prodcons._Consommateur;
 import jus.poc.prodcons._Producteur;
 
 public class ProdCons implements Tampon {
-	// nbplein correspond au nombre de ressource dans le buffer.
-	private int nbplein, N ; // N est le nombre maximum de messages que peut contenir le buffer. 
+	private int N, enAttente ; // N est le nombre maximum de messages que peut contenir le buffer. 
 	 
 	private int in = 0 , out = 0,nbProd = 0 ; 
-	
+	private Semaphore mutex ; 
+	private Semaphore RessourceALire ; 
+	private Semaphore Place ; 
 	
 	private Message[] buffer ;
 	
 	
 	public ProdCons( int n ){
 		N = n ;
-		nbplein = 0 ;  
-		buffer = new Message[N]; 
+		enAttente = 0 ; 
+		buffer = new Message[N];
+		mutex = new Semaphore(1);
+		RessourceALire = new Semaphore(0);
+		Place = new Semaphore(N);
 	}
 
-	
-	public synchronized int enAttente() {
-		return nbplein;
-	}
-	
 	// fonction permettant de retirer une ressource dans le tampon. 
-	public synchronized Message get(_Consommateur c) throws Exception, InterruptedException {
-		// tant qu'il n'y a rien a lire le processus attend. 
-		System.out.println("coucou je suis le consomateur "+ ((Consommateur) c).get_id() );
-		Message m;
-		while (nbplein == 0 ) wait() ; 
+	public Message get(_Consommateur c) throws Exception, InterruptedException {
 		
-		// gestion du buffer
-		synchronized(this){
-			m= buffer[out];
-			out = (out++) % N ;
+		//test pour savoir s'il y'a des messages à lire
+		RessourceALire.P() ; 
+		Message m;
+			
+		// gestion du buffer protégé par les mutex
+//		mutex.P();
+		synchronized (this) {
+			
+			m = buffer[out];
+			out = (out+ 1) % N ;
+			enAttente-- ; 
+//		mutex.V();
 		}
 		
-		//on décremente le nombre de ressource dispo
-		nbplein -- ;
+		//indique qu'on a libéré une place dans le buffeur pour les un Thread Producteur.
+		Place.V();
 		
-		notifyAll();
-		System.out.println("aurevoir je suis le consomateur "+ ((Consommateur) c).get_id() );
 		return m;
 	}
 	
 	// fonction permettant de dï¿½poser une ressource dans le tampon. 
 	public synchronized void put(_Producteur p, Message m) throws Exception, InterruptedException {
-		//si le buffer est plein on attend : 
-		while(nbplein == N ) wait() ;
 		
-		//mettre ï¿½ jour le buffer 
-//		synchronized(this){
+		// on s'assure qu'il y a de la place pour y palcer une ressource 
+		Place.P() ;  
+		
+		//section critique protiégé par les mutex
+//		mutex.P();
+		synchronized (this) {
+			
 			buffer[in] = m ;
 			in = (in +1) %N;
-//		}
-		//on incremente le nombre de ressource dispo 
-		nbplein ++ ; 
+			enAttente++ ;
+		}
+//		mutex.V();
 		
-		notifyAll();
+		//indique qu'une ressource est disponible pour reveiller 
+		RessourceALire.V();
 	}
 	
+	public synchronized int enAttente() {
+		return enAttente;
+	}
 
 	public int taille() {
 		return N;
@@ -82,16 +90,13 @@ public class ProdCons implements Tampon {
 	
 	// return vrai si il n'y a plus de pproducteur et que le bufer est vide
 	public synchronized boolean fin() {
-		boolean resultat = ((nbProd == 0) && ( nbplein == 0 ));
+		boolean resultat = ((nbProd == 0) && ( enAttente == 0 ));
 		//System.out.println("resultat fin = "+ resultat);
 		
-		
-		
-		//On s'assure qu'il n'y pas de nouveau producteur crÃ©e. 
+		//On s'assure qu'il n'y pas de nouveau producteur cree. 
 		if(resultat){
 			notifyAll();
 		}
-		
-		return (nbProd == 0) && ( nbplein == 0 );
+		return (nbProd == 0) && ( enAttente == 0 );
 	} 
 }

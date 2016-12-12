@@ -19,12 +19,12 @@ public class Producteur extends Acteur implements _Producteur{
 	
 
 	protected Producteur(int id, ProdCons buf, Observateur observateur, int moyenneTempsDeTraitement,
-			int deviationTempsDeTraitement, int moyenne, int deviation) throws ControlException {
+			int deviationTempsDeTraitement, int nbm) throws ControlException {
 		
 		super(Acteur.typeProducteur, observateur, moyenneTempsDeTraitement, deviationTempsDeTraitement);
 		
 		// On g�n�re al�toirement le nombre de messages � faire 
-		nbMessageafaire = new Aleatoire(moyenne, deviation).next() ;
+		nbMessageafaire = nbm ; 
 		
 		idProducteur= id ;
 		
@@ -44,7 +44,7 @@ public class Producteur extends Acteur implements _Producteur{
 		
 		buffer.nouveau_prod();
 		for(int i = 0 ; i < nbMessageafaire ; i++  ){
-			MessageX m = new MessageX(i,"contenu");
+			MessageX m = new MessageX(i,"contenu du message ");
 			
 			
 			int temp= alea.valeur(moyenneTempsDeTraitement(), deviationTempsDeTraitement());

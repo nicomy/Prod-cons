@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
-<comment>Configuration pour la version 1</comment>
-<entry key="nbProd">5</entry>
+<comment>Configuration</comment>
+<entry key="nbProd">3</entry>
 <entry key="nbCons">10</entry>
-<entry key="nbBuffer">1</entry>
+<entry key="nbBuffer">12</entry>
 <entry key="tempsMoyenProduction">10</entry>
 <entry key="deviationTempsMoyenProduction">1</entry>
 <entry key="tempsMoyenConsommation">100</entry>
 <entry key="deviationTempsMoyenConsommation">1</entry>
-<entry key="nombreMoyenDeProduction">5</entry>
+<entry key="nombreMoyenDeProduction">7</entry>
 <entry key="deviationNombreMoyenDeProduction">1</entry>
 <entry key="nombreMoyenNbExemplaire">5</entry>
 <entry key="deviationNombreMoyenNbExemplaire">3</entry>

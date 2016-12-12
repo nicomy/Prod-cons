@@ -27,17 +27,17 @@ public class ProdCons implements Tampon {
 	}
 	
 	// fonction permettant de retirer une ressource dans le tampon. 
-	public  Message get(_Consommateur c) throws Exception, InterruptedException {
+	public Message get(_Consommateur c) throws Exception, InterruptedException {
 		// tant qu'il n'y a rien a lire le processus attend. 
 //		System.out.println("coucou je suis le consomateur "+ ((Consommateur) c).get_id() );
 		Message m;
 		while (nbplein == 0 ) wait() ; 
 		
 		// gestion du buffer
-		synchronized(this){
+//		synchronized(this){
 			m= buffer[out];
-			out = (out++) % N ;
-		}
+			out = (out+1 ) % N ;
+//		}
 		
 		//on décremente le nombre de ressource dispo
 		nbplein -- ;
@@ -47,12 +47,13 @@ public class ProdCons implements Tampon {
 		return m;
 	}
 	
-	// fonction permettant de dï¿½poser une ressource dans le tampon. 
+	// fonction permettant de disposer une ressource dans le tampon. 
 	public  void put(_Producteur p, Message m) throws Exception, InterruptedException {
 		//si le buffer est plein on attend : 
 		while(nbplein == N ) wait() ;
 		
 		//mettre a jour le buffer 
+		
 			buffer[in] = m ;
 			in = (in +1) %N;
 

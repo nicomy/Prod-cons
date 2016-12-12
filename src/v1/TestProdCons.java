@@ -31,14 +31,14 @@ public class TestProdCons extends Simulateur {
 		init("options.xml");
 		
 		buffer = new ProdCons(nbBuffer);
+		Aleatoire alea = new Aleatoire(nombreMoyenDeProduction, deviationNombreMoyenDeProduction) ;
 		
 		//creation des porducteurs
 		lprod = new ArrayList<>();
 		for(int i = 0 ; i< nbProd ; i ++ ){
 			try {
 				lprod.add(new Producteur(i, buffer,
-						Ob,tempsMoyenProduction, deviationNombreMoyenDeProduction,
-						nombreMoyenDeProduction, deviationNombreMoyenDeProduction));
+						Ob,tempsMoyenProduction, deviationNombreMoyenDeProduction,alea.next()));
 			} catch (ControlException e) {
 				System.out.println("erreur a la creation de Producteur");
 				e.printStackTrace();
