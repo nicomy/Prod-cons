@@ -28,7 +28,7 @@ public class TestProdCons extends Simulateur {
 	public TestProdCons(Observateur observateur){
 		super(observateur);
 		Ob = observateur;
-		init("options.xml");
+		init("options.1.xml");
 		
 		buffer = new ProdCons(nbBuffer);
 		Aleatoire alea = new Aleatoire(nombreMoyenDeProduction, deviationNombreMoyenDeProduction) ;

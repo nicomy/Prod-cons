@@ -55,16 +55,19 @@ public class ProdCons implements Tampon {
 			for(int i = 0 ; i < ConsServie.size() ; i ++ ){
 				ConsEnAttent.V();
 			}
+		//on enlève tous les consomateurs 
 			ConsServie.clear();
+			
+			//on incrémente l'emplacement ou chercehr le prochain message
 			out = (out+ 1) % N ;
-			//on bloque les consomateurs
+
+			//on libère le producteur qui 
 			ProdEnAttente.V();
 			enAttente-- ; 
 		}
 		
 		//un consomateur ne peut pas poursuivre son activité tant que tous les messages n'ont pas été lu.
 		while(!m.est_consomme()){
-			//wait();
 			ConsEnAttent.P();
 		}
 		
@@ -112,7 +115,7 @@ public class ProdCons implements Tampon {
 		// on s'assure qu'il y a de la place pour y palcer une ressource 
 		Place.P() ;  
 		
-		//section critique protiégé par les mutex
+		//section critique protege par les mutex
 		mutex.P();
 			Ob.depotMessage(p, m);
 			buffer[in] = m ;

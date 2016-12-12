@@ -28,13 +28,13 @@ public class TestProdCons extends Simulateur {
 	public TestProdCons(Observateur observateur){
 		super(observateur);
 		Ob = observateur;
-		init("options.xml");
+		init("options.3.xml");
 		
 		Aleatoire alea = new Aleatoire(nombreMoyenDeProduction, deviationNombreMoyenDeProduction) ;
 		try {
 			Ob.init(nbProd, nbBuffer, nbBuffer);
 		} catch (ControlException e1) {
-			System.out.println("problème initialisation Observateur");
+			System.out.println("problï¿½me initialisation Observateur");
 			e1.printStackTrace();
 		}
 		
