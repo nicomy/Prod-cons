@@ -29,7 +29,6 @@ public class ProdCons implements Tampon {
 	// fonction permettant de retirer une ressource dans le tampon. 
 	public Message get(_Consommateur c) throws Exception, InterruptedException {
 		// tant qu'il n'y a rien a lire le processus attend. 
-//		System.out.println("coucou je suis le consomateur "+ ((Consommateur) c).get_id() );
 		Message m;
 		while (nbplein == 0 ) wait() ; 
 		
@@ -43,7 +42,6 @@ public class ProdCons implements Tampon {
 		nbplein -- ;
 		
 		notifyAll();
-//		System.out.println("aurevoir je suis le consomateur "+ ((Consommateur) c).get_id() );
 		return m;
 	}
 	

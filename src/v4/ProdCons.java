@@ -45,7 +45,6 @@ public class ProdCons implements Tampon {
 	
 		m = (MessageX) get(c);
 		
-		m.lecture();
 		
 		//une fois le nombre de consomateur atteint on les réveillent pour qu'ils puissent 
 		//continuer leurs activités
@@ -94,6 +93,7 @@ public class ProdCons implements Tampon {
 		// gestion du buffer protégé par les mutex
 		mutex.P();
 			m = (MessageX) buffer[out];
+			m.lecture();
 			Ob.retraitMessage(c, m);
 			((Consommateur) c).blabla(m);
 		mutex.V();
