@@ -33,14 +33,14 @@ public class ProdCons implements Tampon {
 		Message m;
 			
 		// gestion du buffer protégé par les mutex
-//		mutex.P();
-		synchronized (this) {
+		mutex.P();
+//		synchronized (this) {
 			
 			m = buffer[out];
 			out = (out+ 1) % N ;
 			enAttente-- ; 
-//		mutex.V();
-		}
+		mutex.V();
+//		}
 		
 		//indique qu'on a libéré une place dans le buffeur pour les un Thread Producteur.
 		Place.V();
@@ -55,14 +55,14 @@ public class ProdCons implements Tampon {
 		Place.P() ;  
 		
 		//section critique protiégé par les mutex
-//		mutex.P();
-		synchronized (this) {
+		mutex.P();
+//		synchronized (this) {
 			
 			buffer[in] = m ;
 			in = (in +1) %N;
 			enAttente++ ;
-		}
-//		mutex.V();
+//		}
+		mutex.V();
 		
 		//indique qu'une ressource est disponible pour reveiller 
 		RessourceALire.V();
