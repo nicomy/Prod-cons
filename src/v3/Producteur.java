@@ -46,7 +46,8 @@ public class Producteur extends Acteur implements _Producteur{
 		buffer.nouveau_prod();
 		for(int i = 0 ; i < nbMessageafaire ; i++  ){
 			MessageX m = new MessageX(i,"contenu du message ");
-			int temps= alea.valeur(moyenneTempsDeTraitement(), deviationTempsDeTraitement());
+			int temps= alea.next();
+			System.out.println("temps = "+ temps);
 			try {
 				Ob.productionMessage(this, m, temps);
 			} catch (ControlException e2) {

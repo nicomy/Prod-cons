@@ -15,12 +15,13 @@ public class Producteur extends Acteur implements _Producteur{
 	private int nbMessageafaire ; 
 	private ProdCons buffer ; 
 	private Aleatoire alea ; 
+	private Aleatoire nbMAlea ;
 	private int idProducteur ; 
 	private Observateur Ob; 
 	
 
 	protected Producteur(int id, ProdCons buf, Observateur observateur, int moyenneTempsDeTraitement,
-			int deviationTempsDeTraitement, int nbm) throws ControlException {
+			int deviationTempsDeTraitement, int nbm, int MoyNb, int devNb) throws ControlException {
 		
 		super(Acteur.typeProducteur, observateur, moyenneTempsDeTraitement, deviationTempsDeTraitement);
 		
@@ -29,8 +30,9 @@ public class Producteur extends Acteur implements _Producteur{
 		
 		idProducteur= id ;
 		Ob = observateur ;
-		//on dï¿½finit un objet alï¿½toire pour indiquer quand envoyer un message.
+		//on définit un objet aléatoire pour simuler un temps de production des messages 
 		alea = new Aleatoire(moyenneTempsDeTraitement,deviationTempsDeTraitement);
+		nbMAlea = new Aleatoire(MoyNb,devNb);
 		buffer = buf ; 
 		
 		
@@ -42,11 +44,12 @@ public class Producteur extends Acteur implements _Producteur{
 	}
 
 	public void run(){
-		
+		int temps, NbInteration ; 
 		buffer.nouveau_prod();
 		for(int i = 0 ; i < nbMessageafaire ; i++  ){
-			MessageX m = new MessageX(i,"contenu du message ");
-			int temps= alea.valeur(moyenneTempsDeTraitement(), deviationTempsDeTraitement());
+			temps= alea.next();
+			NbInteration = nbMAlea.next();
+			MessageX m = new MessageX(i,"contenu du message ",NbInteration);
 			try {
 				Ob.productionMessage(this, m, temps);
 			} catch (ControlException e2) {

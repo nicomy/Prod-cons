@@ -5,10 +5,10 @@
 <entry key="nbProd">3</entry>
 <entry key="nbCons">10</entry>
 <entry key="nbBuffer">12</entry>
-<entry key="tempsMoyenProduction">10</entry>
-<entry key="deviationTempsMoyenProduction">1</entry>
+<entry key="tempsMoyenProduction">100</entry>
+<entry key="deviationTempsMoyenProduction">40</entry>
 <entry key="tempsMoyenConsommation">100</entry>
-<entry key="deviationTempsMoyenConsommation">1</entry>
+<entry key="deviationTempsMoyenConsommation">40</entry>
 <entry key="nombreMoyenDeProduction">7</entry>
 <entry key="deviationNombreMoyenDeProduction">1</entry>
 <entry key="nombreMoyenNbExemplaire">5</entry>
