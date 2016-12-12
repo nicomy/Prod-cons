@@ -1,5 +1,7 @@
 package v4;
 
+import java.util.ArrayList;
+
 import jus.poc.prodcons.Message;
 import jus.poc.prodcons.Observateur;
 import jus.poc.prodcons.Tampon;
@@ -13,9 +15,11 @@ public class ProdCons implements Tampon {
 	private Semaphore mutex ; 
 	private Semaphore RessourceALire ; 
 	private Semaphore Place ; 
+	private Semaphore ProdEnATtente;
 	private Observateur Ob ; 
 	private Message[] buffer ;
-	
+	private ArrayList<Consommateur> ConsServie ;
+	private ArrayList<Producteur> Prod;
 	
 	public ProdCons( int n, Observateur observateur ){
 		N = n ;
@@ -24,35 +28,82 @@ public class ProdCons implements Tampon {
 		mutex = new Semaphore(1);
 		RessourceALire = new Semaphore(0);
 		Place = new Semaphore(N);
+		ProdEnATtente = new Semaphore(0);
 		Ob = observateur ; 
+		ConsServie =new ArrayList<>() ;
 		
 	}
 
-	// fonction permettant de retirer une ressource dans le tampon. 
-	public Message get(_Consommateur c) throws Exception, InterruptedException {
+	//gère la lecture mutliple du même message. 
+	public  MessageX lire(Consommateur c) throws InterruptedException, Exception{
+		System.out.println(" Cons " + ((Consommateur) c).get_id() + " est au debut ");
+	
+		MessageX m = null ;
+		ConsServie.add(c);
+	
+		m = (MessageX) get(c);
 		
+		m.lecture();
+		
+		
+		//une fois le nombre de consomateur atteint on les réveillent pour qu'ils puissent 
+		//continuer leur activités
+		if(m.est_consomme()){
+			notifyAll();
+			ConsServie.clear();
+			out = (out+ 1) % N ;
+			ProdEnATtente.V();
+			enAttente-- ; 
+		}
+		
+		//un consomateur ne peut pas poursuivre son activité tant que tous les messages n'ont pas été lu.
+		while(!m.est_consomme()){
+			wait();
+		}
+		
+		return m ; 
+	
+	}
+	
+	
+	// je pense pas qu'un synchronise soit necessaire car il est fait à l'appel de la fonction
+	public  void ecrire(Producteur p, MessageX m) throws InterruptedException, Exception{
+		put(p,m);
+		System.out.println("le producteur " + p.get_id() + " à posé son message et va attendre") ;
+		ProdEnATtente.P();
+		System.out.println("le producteur " + p.get_id() + " a fini d'attendre") ;
+	}
+	
+	
+	// fonction permettant de retirer une ressource dans le tampon. 
+	public MessageX get(_Consommateur c) throws Exception, InterruptedException {
+		System.out.println(" Cons " + ((Consommateur) c).get_id() + " est au debut ");
 		//test pour savoir s'il y'a des messages à lire
 		RessourceALire.P() ; 
-		Message m;
-			
+		MessageX m;
+		
 		// gestion du buffer protégé par les mutex
 		mutex.P();
 //		synchronized (this) {
-			m = buffer[out];
+		System.out.println(" Cons " + ((Consommateur) c).get_id() + " avant de lire le message");
+			m = (MessageX) buffer[out];
 			Ob.retraitMessage(c, m);
-			out = (out+ 1) % N ;
-			enAttente-- ; 
+			//out = (out+ 1) % N ;
+			//enAttente-- ; 
+		System.out.println(" Cons " + ((Consommateur) c).get_id() + " après avoir lu le message ");
 		mutex.V();
 //		}
 		
-		//indique qu'on a libéré une place dans le buffeur pour les un Thread Producteur.
-		Place.V();
+		//indique si le message est entièrement consommé qu'on a libéré une place dans le buffeur pour les un Thread Producteur.
+		if(m.est_consomme()) {
+			Place.V();
+		}
 		
 		return m;
 	}
 	
 	// fonction permettant de dï¿½poser une ressource dans le tampon. 
-	public synchronized void put(_Producteur p, Message m) throws Exception, InterruptedException {
+	public  void put(_Producteur p, Message m) throws Exception, InterruptedException {
 		
 		// on s'assure qu'il y a de la place pour y palcer une ressource 
 		Place.P() ;  

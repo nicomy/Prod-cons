@@ -42,6 +42,10 @@ public class Producteur extends Acteur implements _Producteur{
 	public int nombreDeMessages() {
 		return nbMessageafaire;
 	}
+	
+	public int get_id(){
+		return idProducteur;
+	}
 
 	public void run(){
 		int temps, NbInteration ; 
@@ -66,11 +70,12 @@ public class Producteur extends Acteur implements _Producteur{
 			}
 			
 			try {
-				synchronized (buffer) {
-					buffer.put(this, m);
+//				synchronized (buffer) {
+//					buffer.put(this, m);
+					buffer.ecrire(this, m);
 					blabla(m);
 					
-				}
+//				}
 					
 			} catch (InterruptedException e) {
 				System.out.println("erreur de mise dans le tampon");

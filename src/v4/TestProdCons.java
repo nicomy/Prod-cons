@@ -45,14 +45,14 @@ public class TestProdCons extends Simulateur {
 		for(int i = 0 ; i< nbProd ; i ++ ){
 			try {
 				Producteur p = new Producteur(i, buffer,
-						Ob,tempsMoyenProduction, deviationNombreMoyenDeProduction,alea.next() );
+						Ob,tempsMoyenProduction, deviationNombreMoyenDeProduction,alea.next(),nombreMoyenNbExemplaire,deviationNombreMoyenNbExemplaire  );
 				lprod.add(p);
 				Ob.newProducteur(p);
 			} catch (ControlException e) {
 				System.out.println("erreur a la creation de Producteur");
 				e.printStackTrace();
-			}
 			
+			}
 		}
 		
 		//mise en place des consomateurs
