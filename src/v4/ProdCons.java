@@ -49,12 +49,15 @@ public class ProdCons implements Tampon {
 	public  Message get(_Consommateur c) throws Exception, InterruptedException {
 		
 		Consommateur cons = (Consommateur ) c ; 
-		
+		/*
+		 *  pb au niveau du nombre de ressource alloué les deux producteur produise
+		 *  et donc RessourceAlire est trop grand. 
+		 *  faire un blocage en comptenant le nombre par message ! 
+		 */
 		
 		//test pour savoir s'il y'a des messages à lire
 		RessourceALire.P() ; 
 		Message m;
-		
 		
 		if(enAttente>0){
 			// gestion du buffer protï¿½gï¿½ par les mutex
@@ -80,7 +83,6 @@ public class ProdCons implements Tampon {
 				
 				//indique qu'on a libéré une place dans le buffeur pour un Thread Producteur.
 				Place.V();
-				
 				mutex.V();
 			}
 			else{
