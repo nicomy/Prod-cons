@@ -7,7 +7,6 @@ import jus.poc.prodcons.Acteur;
 import jus.poc.prodcons.Aleatoire;
 import jus.poc.prodcons.ControlException;
 import jus.poc.prodcons.Observateur;
-import jus.poc.prodcons.Tampon;
 import jus.poc.prodcons._Producteur;
 import v5.TestProdCons;
 
@@ -15,19 +14,16 @@ public class Producteur extends Acteur implements _Producteur{
 	
 	private int nbMessageafaire ; 
 	private ProdCons buffer ; 
-	private Aleatoire alea ; 
-	private int idProducteur ; 
+	private Aleatoire alea ;  
 	
 
-	protected Producteur(int id, ProdCons buf, Observateur observateur, int moyenneTempsDeTraitement,
+	protected Producteur(ProdCons buf, Observateur observateur, int moyenneTempsDeTraitement,
 			int deviationTempsDeTraitement, int nbm) throws ControlException {
 		
 		super(Acteur.typeProducteur, observateur, moyenneTempsDeTraitement, deviationTempsDeTraitement);
 		
 		// On g�n�re al�toirement le nombre de messages � faire 
 		nbMessageafaire = nbm ; 
-		
-		idProducteur= id ;
 		
 		//on d�finit un objet al�toire pour indiquer quand envoyer un message.
 		alea = new Aleatoire(moyenneTempsDeTraitement,deviationTempsDeTraitement);
@@ -48,7 +44,7 @@ public class Producteur extends Acteur implements _Producteur{
 			MessageX m = new MessageX(i,"contenu", new Date());
 			
 			
-			int temp= alea.valeur(moyenneTempsDeTraitement(), deviationTempsDeTraitement());
+			int temp= alea.next();
 			
 			try {
 				sleep(temp);
@@ -78,7 +74,7 @@ public class Producteur extends Acteur implements _Producteur{
 	
 	public void blabla(MessageX m ){
 		String time = new SimpleDateFormat("mm:ss:S").format(new Date());
-		System.out.println(time +": Je suis le produceur d'id "+ idProducteur + "j'envoi le message"+ m.get_id()+"\n" );
+		System.out.println(time +": Je suis le produceur d'id "+ identification() + "j'envoi le message"+ m.get_id()+"\n" );
 		
 		
 	}

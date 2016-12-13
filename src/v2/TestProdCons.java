@@ -36,7 +36,7 @@ public class TestProdCons extends Simulateur {
 		lprod = new ArrayList<>();
 		for(int i = 0 ; i< nbProd ; i ++ ){
 			try {
-				lprod.add(new Producteur(i, buffer,
+				lprod.add(new Producteur(buffer,
 						Ob,tempsMoyenProduction, deviationNombreMoyenDeProduction,alea.next() ));
 			} catch (ControlException e) {
 				System.out.println("erreur a la creation de Producteur");
@@ -49,7 +49,7 @@ public class TestProdCons extends Simulateur {
 		lcons = new ArrayList<>();
 		for(int i = 0 ; i< nbCons ; i ++ ){
 			try {
-				lcons.add(new Consommateur(i,Ob, tempsMoyenConsommation,
+				lcons.add(new Consommateur(Ob, tempsMoyenConsommation,
 						deviationTempsMoyenConsommation, buffer));
 			} catch (ControlException e) {
 				System.out.println("erreur cr�ation consomateur");
