@@ -18,7 +18,7 @@ public class MessageX implements Message {
 	}
 	
 	public boolean est_consomme(){
-		return NbCons == NbExemplaire ;
+		return NbCons >= NbExemplaire ;
 	}
 	
 	public int get_idProd(){

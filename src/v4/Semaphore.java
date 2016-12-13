@@ -7,6 +7,10 @@ public class Semaphore {
 		n = res ; 
 	}
 	
+	public synchronized int get_n(){
+		return n ; 
+	}
+	
 	public synchronized void P(){
 		n-- ; 
 		
@@ -30,5 +34,9 @@ public class Semaphore {
 			notify() ;
 		}
 		
+	}
+	
+	public synchronized void freeAll(){
+		notifyAll();
 	}
 }

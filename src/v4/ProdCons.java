@@ -18,6 +18,7 @@ public class ProdCons implements Tampon {
 	private Semaphore Place ; 
 	private Semaphore[] ProdEnAttente;
 	private Semaphore[] ConsEnAttent ;
+	private Semaphore[] CaseBuffer ; 
 	
 	private ArrayList<Consommateur> ConsBloque ; 
 	private Observateur Ob ; 
@@ -31,6 +32,7 @@ public class ProdCons implements Tampon {
 		RessourceALire = new Semaphore(0);
 		Place = new Semaphore(N);
 		ProdEnAttente = new Semaphore[NbP];
+		CaseBuffer = new Semaphore[N];
 		for(int i = 0 ; i < NbP ; i++){
 			ProdEnAttente[i] = new Semaphore(0);
 		}
@@ -56,11 +58,20 @@ public class ProdCons implements Tampon {
 		 */
 		
 		//test pour savoir s'il y'a des messages à lire
+		System.out.println("avant ressource à lire "+RessourceALire.get_n() );
 		RessourceALire.P() ; 
+		
+		System.out.println("avant casebuffer");
+		
+		CaseBuffer[out].P();
 		Message m;
+		
 		
 		if(enAttente>0){
 			// gestion du buffer protï¿½gï¿½ par les mutex
+			
+			System.out.println("avant premier mutex");
+			
 			mutex.P();
 				m = buffer[out];
 				((MessageX) m).lecture();
@@ -70,9 +81,7 @@ public class ProdCons implements Tampon {
 			
 			if (((MessageX) m).est_consomme()){
 				
-				mutex.P();
 				
-				out= (out+1)  %N ;
 				//On libère son producteur
 				ProdEnAttente[((MessageX) m).get_idProd()].V();
 				//on libère tous les consomateurs bloqué ; 
@@ -80,15 +89,27 @@ public class ProdCons implements Tampon {
 					ConsEnAttent[ctmp.get_id()].V(); 
 				}
 				ConsBloque.clear();
+				CaseBuffer[out].freeAll();
+				
+				System.out.println("avant deuxième mutex ");
+				
+				
+				mutex.P();
+				out= (out+1)  %N ;
+				mutex.V();
 				
 				//indique qu'on a libéré une place dans le buffeur pour un Thread Producteur.
 				Place.V();
-				mutex.V();
 			}
 			else{
 				// On bloque le consommmateur. 
 				ConsBloque.add(cons );
+				
+				System.out.println(cons.get_id() +" attendre");
+				
 				ConsEnAttent[cons.get_id()].P() ;
+				
+//				System.out.println(cons.get_id() +" fini d'attendre ");
 			}
 		}else{
 			m=null;
@@ -105,16 +126,17 @@ public class ProdCons implements Tampon {
 		mutex.P();
 			Ob.depotMessage(p, m);
 			buffer[in] = m ;
-			in = (in +1) %N;
 			NbExplaireRestant = ((MessageX) m).get_NbExemplaire() ;
+			CaseBuffer[in] = new Semaphore(NbExplaireRestant);
 			enAttente += NbExplaireRestant ; 
 			System.out.println(NbExplaireRestant);
 			((Producteur) p).blabla((MessageX) m);
-			
+			in = (in +1) %N;
 			//indique qu'il y a un Certains nombre de ressource à prendre 
 			for(int i = 0 ; i < ((MessageX) m).get_NbExemplaire() ; i ++ ){
 				RessourceALire.V();
 			}
+			System.out.println("dans prod ressource à lire : "+ RessourceALire.get_n());
 		mutex.V();
 		
 		
