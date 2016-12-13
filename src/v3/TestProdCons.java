@@ -43,7 +43,7 @@ public class TestProdCons extends Simulateur {
 		lprod = new ArrayList<>();
 		for(int i = 0 ; i< nbProd ; i ++ ){
 			try {
-				Producteur p = new Producteur(i, buffer,
+				Producteur p = new Producteur(buffer,
 						Ob,tempsMoyenProduction, deviationNombreMoyenDeProduction,alea.next() );
 				lprod.add(p);
 				Ob.newProducteur(p);
@@ -58,7 +58,7 @@ public class TestProdCons extends Simulateur {
 		lcons = new ArrayList<>();
 		for(int i = 0 ; i< nbCons ; i ++ ){
 			try {
-				Consommateur c = new Consommateur(i,Ob, tempsMoyenConsommation,
+				Consommateur c = new Consommateur(Ob, tempsMoyenConsommation,
 						deviationTempsMoyenConsommation, buffer) ;
 				lcons.add(c);
 				Ob.newConsommateur(c);

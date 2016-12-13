@@ -13,17 +13,15 @@ public class Consommateur extends Acteur implements _Consommateur {
 	private int nbMessagelu ; 
 	private ProdCons buffer ; 
 	private Aleatoire gen_temps ; 
-	private int idConsommateur ; 
 	private Observateur Ob; 
 	
-	public Consommateur(int id , Observateur observateur, int moyenneTempsDeTraitement,
+	public Consommateur(Observateur observateur, int moyenneTempsDeTraitement,
 		int deviationTempsDeTraitement,ProdCons buf) throws ControlException {
 		super(Acteur.typeConsommateur, observateur, moyenneTempsDeTraitement, deviationTempsDeTraitement);
 		
 		nbMessagelu = 0 ; 
 		gen_temps = new Aleatoire(moyenneTempsDeTraitement, deviationTempsDeTraitement);
 		buffer = buf ;
-		idConsommateur  =id ; 
 		Ob = observateur;
 	}
 
@@ -33,17 +31,15 @@ public class Consommateur extends Acteur implements _Consommateur {
 	}
 	
 	public int get_id(){
-		return idConsommateur ;
+		return identification() ;
 	}
 	
 	public void run(){
 		
 		MessageX m = null ; 
-		int temps; 
-		// On simule un temps de calcul une fois le message lu.
-		Aleatoire alea = new Aleatoire(moyenneTempsDeTraitement(), deviationTempsDeTraitement());
+		int temps;
 		
-		if(TestProdCons.outputs) System.out.println("Consomateur "+ idConsommateur+ " rentre dans la game");
+		if(TestProdCons.outputs) System.out.println("Consomateur "+ identification()+ " rentre dans la game");
 		
 		while(!buffer.fin()){
 			
@@ -57,6 +53,7 @@ public class Consommateur extends Acteur implements _Consommateur {
 				System.out.println(" probleme recuperation du message");
 				e.printStackTrace();
 			} 
+			// On simule un temps de calcul une fois le message lu.
 			temps = gen_temps.next();
 			try {
 				if(m!=null) Ob.consommationMessage(this, m, temps);
@@ -73,16 +70,16 @@ public class Consommateur extends Acteur implements _Consommateur {
 			
 		}
 		
-		if(TestProdCons.outputs) System.out.println("Consomateur "+ idConsommateur+ " sort de la game");
+		if(TestProdCons.outputs) System.out.println("Consomateur "+ identification()+ " sort de la game");
 	}
 	
 	// cette fonction permet de dire que fait les consomateur
 	public void blabla(MessageX m ){
 		String time = new SimpleDateFormat("mm:ss:S").format(new Date());
 		if(m!=null){
-			System.out.println(time +": Je suis le consomateur d'id "+ idConsommateur + ". Je lis le message"+ m.get_id()+"\n" );
+			System.out.println(time +": Je suis le consomateur d'id "+ identification() + ". Je lis le message"+ m.get_id()+"\n" );
 		}else{
-			System.out.println(time +": Je suis le consomateur d'id "+ idConsommateur + ". IL n'y a plus de message pour moi\n" );
+			System.out.println(time +": Je suis le consomateur d'id "+ identification() + ". IL n'y a plus de message pour moi\n" );
 		}
 	}	
 			

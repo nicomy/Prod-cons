@@ -7,7 +7,6 @@ import jus.poc.prodcons.Acteur;
 import jus.poc.prodcons.Aleatoire;
 import jus.poc.prodcons.ControlException;
 import jus.poc.prodcons.Observateur;
-import jus.poc.prodcons.Tampon;
 import jus.poc.prodcons._Producteur;
 
 public class Producteur extends Acteur implements _Producteur{
@@ -15,11 +14,10 @@ public class Producteur extends Acteur implements _Producteur{
 	private int nbMessageafaire ; 
 	private ProdCons buffer ; 
 	private Aleatoire alea ; 
-	private int idProducteur ; 
 	private Observateur Ob; 
 	
 
-	public Producteur(int id, ProdCons buf, Observateur observateur, int moyenneTempsDeTraitement,
+	public Producteur(ProdCons buf, Observateur observateur, int moyenneTempsDeTraitement,
 			int deviationTempsDeTraitement, int nbm) throws ControlException {
 		
 		super(Acteur.typeProducteur, observateur, moyenneTempsDeTraitement, deviationTempsDeTraitement);
@@ -27,7 +25,6 @@ public class Producteur extends Acteur implements _Producteur{
 		// On g�n�re al�toirement le nombre de messages � faire 
 		nbMessageafaire = nbm ; 
 		
-		idProducteur= id ;
 		Ob = observateur ;
 		//on d�finit un objet al�toire pour indiquer quand envoyer un message.
 		alea = new Aleatoire(moyenneTempsDeTraitement,deviationTempsDeTraitement);
@@ -44,7 +41,8 @@ public class Producteur extends Acteur implements _Producteur{
 		
 		buffer.nouveau_prod();
 		for(int i = 0 ; i < nbMessageafaire ; i++  ){
-			MessageX m = new MessageX(this.idProducteur*100+i,"contenu du message ");
+			MessageX m = new MessageX(identification()*100+i,"contenu du message ");
+			
 			int temps= alea.next();
 			// if(TestProdCons.outputs) System.out.println("temps = "+ temps);
 			try {
@@ -81,7 +79,7 @@ public class Producteur extends Acteur implements _Producteur{
 	
 	public void blabla(MessageX m ){
 		String time = new SimpleDateFormat("mm:ss:S").format(new Date());
-		System.out.println(time +": Je suis le produceur d'id "+ idProducteur + "j'envoi le message"+ m.get_id()+"\n" );
+		System.out.println(time +": Je suis le produceur d'id "+ identification() + "j'envoi le message"+ m.get_id()+"\n" );
 		
 		
 	}

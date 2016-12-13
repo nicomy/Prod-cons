@@ -3,7 +3,6 @@ package v4;
 import jus.poc.prodcons.Aleatoire;
 import jus.poc.prodcons.Message;
 import v3.*;
-import v3.TestProdCons;
 import jus.poc.prodcons.Observateur;
 import jus.poc.prodcons.Tampon;
 import jus.poc.prodcons._Consommateur;
@@ -63,7 +62,7 @@ public class ProdCons implements Tampon {
 				
 				synchronized(m){mutex.V();m.notifyAll();}
 			}else{
-				if(v4.TestProdCons.outputs) 
+				if(TestProdCons.outputs) 
 					System.out.println("Consommateur "+c.identification()+" retire un exemplaire du message "+((MessageX) m).get_id());
 				RessourceALire.V(); 
 				synchronized(m){mutex.V();m.wait();}

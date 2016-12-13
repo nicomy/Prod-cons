@@ -13,18 +13,16 @@ import v3.MessageX;
 public class Consommateur extends Acteur implements _Consommateur {
 	private int nbMessagelu ; 
 	private ProdCons buffer ; 
-	private Aleatoire gen_temps ; 
-	private int idConsommateur ; 
+	private Aleatoire gen_temps ;  
 	private Observateur Ob; 
 	
-	public Consommateur(int id , Observateur observateur, int moyenneTempsDeTraitement,
+	public Consommateur(Observateur observateur, int moyenneTempsDeTraitement,
 		int deviationTempsDeTraitement,ProdCons buf) throws ControlException {
 		super(Acteur.typeConsommateur, observateur, moyenneTempsDeTraitement, deviationTempsDeTraitement);
 		
 		nbMessagelu = 0 ; 
 		gen_temps = new Aleatoire(moyenneTempsDeTraitement, deviationTempsDeTraitement);
-		buffer = buf ;
-		idConsommateur  =id ; 
+		buffer = buf ; 
 		Ob = observateur;
 	}
 
@@ -42,8 +40,6 @@ public class Consommateur extends Acteur implements _Consommateur {
 		
 		MessageX m = null ; 
 		int temps; 
-		// On simule un temps de calcul une fois le message lu.
-		Aleatoire alea = new Aleatoire(moyenneTempsDeTraitement(), deviationTempsDeTraitement());
 		
 		if(TestProdCons.outputs) System.out.println("Consomateur "+ this.identification()+ " rentre dans la game");
 		
@@ -59,6 +55,7 @@ public class Consommateur extends Acteur implements _Consommateur {
 				System.out.println(" probleme recuperation du message");
 				e.printStackTrace();
 			} 
+			// On simule un temps de calcul une fois le message lu.
 			temps = gen_temps.next();
 			try {
 				if(m!=null) Ob.consommationMessage(this, m, temps);
