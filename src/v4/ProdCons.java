@@ -1,5 +1,6 @@
 package v4;
 
+
 import java.util.ArrayList;
 
 import jus.poc.prodcons.Message;
@@ -10,127 +11,190 @@ import jus.poc.prodcons._Producteur;
 
 public class ProdCons implements Tampon {
 	private int N, enAttente ; // N est le nombre maximum de messages que peut contenir le buffer. 
-	 
-	private int in = 0 , out = 0,nbProd = 0 ; 
+	//enAttente correspond au nombre de message que le buffer doit lire.
+	private int in = 0 , out = 0,nbProdAlive = 0, NbExplaireRestant = 0,NbMesCosomme  ; 
 	private Semaphore mutex ; 
 	private Semaphore RessourceALire ; 
 	private Semaphore Place ; 
-	private Semaphore ProdEnAttente;
-	private Semaphore ConsEnAttent ;
+	private Semaphore[] ProdEnAttente;
+	private Semaphore[] ConsEnAttent ;
+	
+	private ArrayList<Consommateur> ConsBloque ; 
 	private Observateur Ob ; 
 	private Message[] buffer ;
-	private ArrayList<Consommateur> ConsServie ;
-	private ArrayList<Producteur> Prod;
 	
-	public ProdCons( int n, Observateur observateur ){
+	public ProdCons( int n, Observateur observateur, int NbP,int NbCons ){
 		N = n ;
-		enAttente = 0 ; 
+		enAttente = 0 ; //nombre de message à lire; 
 		buffer = new Message[N];
 		mutex = new Semaphore(1);
 		RessourceALire = new Semaphore(0);
 		Place = new Semaphore(N);
-		ProdEnAttente = new Semaphore(0);
-		ConsEnAttent = new Semaphore(0 );
+		ProdEnAttente = new Semaphore[NbP];
+		for(int i = 0 ; i < NbP ; i++){
+			ProdEnAttente[i] = new Semaphore(0);
+		}
+		
+		ConsEnAttent = new Semaphore[NbCons];
+		for(int i = 0 ; i < NbCons ; i++){
+			ConsEnAttent[i] = new Semaphore(0);
+		}
+		
+		ConsBloque = new ArrayList<>();
+		
 		Ob = observateur ; 
-		ConsServie =new ArrayList<>() ;
 		
 	}
 
-	//gère la lecture mutliple du même message. 
-	public  MessageX lire(Consommateur c) throws InterruptedException, Exception{
-//		System.out.println(" Cons " + ((Consommateur) c).get_id() + " est au debut ");
-	
-		MessageX m = null ;
-		ConsServie.add(c);
-	
-		m = (MessageX) get(c);
-		
-		
-		//une fois le nombre de consomateur atteint on les réveillent pour qu'ils puissent 
-		//continuer leurs activités
-		if(m.est_consomme()){
-//			notifyAll();
-			
-			//On libère tous les consomateurs
-			for(int i = 0 ; i < ConsServie.size() ; i ++ ){
-				ConsEnAttent.V();
-			}
-		//on enlève tous les consomateurs 
-			ConsServie.clear();
-			
-			//on incrémente l'emplacement ou chercehr le prochain message
-			out = (out+ 1) % N ;
 
-			//on libère le producteur qui 
-			ProdEnAttente.V();
-			enAttente-- ; 
-		}
-		
-		//un consomateur ne peut pas poursuivre son activité tant que tous les messages n'ont pas été lu.
-		while(!m.est_consomme()){
-			ConsEnAttent.P();
-		}
-		
-		return m ; 
-	
-	}
 	
 	
-	// je pense pas qu'un synchronise soit necessaire car il est fait à l'appel de la fonction
-	public  void ecrire(Producteur p, MessageX m) throws InterruptedException, Exception{
-		put (p,m);
-		System.out.println("le producteur " + p.get_id() + " à posé son message et va attendre") ;
-		ProdEnAttente.P();
-		System.out.println("le producteur " + p.get_id() + " a fini d'attendre") ;
-	}
-	
+//	// je pense pas qu'un synchronise soit necessaire car il est fait à l'appel de la fonction
+//	public  void ecrire(Producteur p, MessageX m) throws InterruptedException, Exception{
+//		put (p,m);
+//		System.out.println("le producteur " + p.get_id() + " à posé son message et va attendre") ;
+//		ProdEnAttente.P();
+//		System.out.println("le producteur " + p.get_id() + " a fini d'attendre") ;
+//	}
+//	
 	
 	// fonction permettant de retirer une ressource dans le tampon. 
-	public  MessageX get(_Consommateur c) throws Exception, InterruptedException {
-//		System.out.println(" Cons " + ((Consommateur) c).get_id() + " est au debut ");
+//	public  MessageX get(_Consommateur c) throws Exception, InterruptedException {
+//		
+//		RessourceALire.P() ; 
+//		MessageX m;
+//		
+//		mutex.P();
+//			m = (MessageX) buffer[out];
+//			m.lecture();
+//			Ob.retraitMessage(c, m);
+//			((Consommateur) c).blabla(m);
+//		mutex.V();
+//		
+//		if(m.est_consomme()) {
+//			Place.V();
+//		}
+//		return m;
+//	}
+//	
+//	public  void put(_Producteur p, Message m) throws Exception, InterruptedException {
+//		
+//		Place.P() ;  
+//		
+//		mutex.P();
+//			Ob.depotMessage(p, m);
+//			buffer[in] = m ;
+//			in = (in +1) %N;
+//			enAttente++ ;
+//			((Producteur) p).blabla((MessageX) m);
+//		mutex.V();
+//		
+//		
+//		for(int i = 0 ; i < ((MessageX) m).get_NbExemplaire() ; i ++ ){
+//			RessourceALire.V();
+//		}
+//	}
+//	
+	
+//	public  MessageX lire(Consommateur c) throws InterruptedException, Exception{
+//	
+//		MessageX m = null ;
+//		ConsServie.add(c);
+//	
+//		m = (MessageX) get(c);
+//		
+//		
+//		if(m.est_consomme()){
+//			
+//			for(int i = 0 ; i < ConsServie.size() ; i ++ ){
+//				ConsEnAttent.V();
+//			}
+//			ConsServie.clear();
+//			
+//			out = (out+ 1) % N ;
+//
+//			ProdEnAttente.V();
+//			enAttente-- ; 
+//		}
+//		
+//		while(!m.est_consomme()){
+//			ConsEnAttent.P();
+//		}
+//		
+//		return m ; 
+//	
+//	}
+	public  Message get(_Consommateur c) throws Exception, InterruptedException {
+		
+		Consommateur cons = (Consommateur ) c ; 
 		
 		//test pour savoir s'il y'a des messages à lire
 		RessourceALire.P() ; 
-		MessageX m;
+		Message m;
+			
+		if(!fin()){
+			// gestion du buffer protï¿½gï¿½ par les mutex
+			mutex.P();
+				m = buffer[out];
+				((MessageX) m).lecture();
+				enAttente-- ; 
+				cons.blabla((MessageX) m);
+			mutex.V();
+			
+			if (((MessageX) m).est_consomme()){
+				
+				mutex.P();
+				//On libère son producteur
+				ProdEnAttente[((MessageX) m).get_idProd()].V();
+				
+				//on libère tous les consomateurs blolqué ; 
+				for (Consommateur ctmp : ConsBloque){
+					ConsEnAttent[ctmp.get_id()].V(); 
+				}
+				ConsBloque.clear();
+				
+				//indique qu'on a libéré une place dans le buffeur pour un Thread Producteur.
+				Place.V();
+			}
+			else{// On bloque le consommmateur. 
+				ConsBloque.add(cons );
+				ConsEnAttent[cons.get_id()].P() ;
+			}
+		}else{
+			m=null;
+		}	
 		
-		// gestion du buffer protégé par les mutex
-		mutex.P();
-			m = (MessageX) buffer[out];
-			m.lecture();
-			Ob.retraitMessage(c, m);
-			((Consommateur) c).blabla(m);
-		mutex.V();
-		
-		//indique si le message est entièrement consommé qu'on a libéré une place dans le buffeur pour les un Thread Producteur.
-		if(m.est_consomme()) {
-			Place.V();
-		}
-//		System.out.println(" Cons " + ((Consommateur) c).get_id() + "sort de get");
+		System.out.println("sortie par "+cons.get_id() +" du get ");
 		return m;
+		
 	}
 	
-	// fonction permettant de dï¿½poser une ressource dans le tampon. 
 	public  void put(_Producteur p, Message m) throws Exception, InterruptedException {
 		
-		// on s'assure qu'il y a de la place pour y palcer une ressource 
-		Place.P() ;  
 		
-		//section critique protege par les mutex
+		Place.P();
+		
 		mutex.P();
+		
 			Ob.depotMessage(p, m);
 			buffer[in] = m ;
 			in = (in +1) %N;
-			enAttente++ ;
+			NbExplaireRestant = ((MessageX) m).get_NbExemplaire() ;
+			enAttente += NbExplaireRestant ; 
 			((Producteur) p).blabla((MessageX) m);
+			
 		mutex.V();
 		
-		
-		//indique qu'une ressource est disponible et va reveiller si besoin les 
+		//indique qu'il y a un Certains nombre de ressource à prendre 
 		for(int i = 0 ; i < ((MessageX) m).get_NbExemplaire() ; i ++ ){
 			RessourceALire.V();
 		}
+		
+		//On bloque le Prodcteur associé. 
+		ProdEnAttente[((Producteur) p).get_id()].P();
+
+		
 	}
-	
 	public synchronized int enAttente() {
 		return enAttente;
 	}
@@ -140,26 +204,25 @@ public class ProdCons implements Tampon {
 	}
 
 	public synchronized void nouveau_prod(){
-		System.out.println("le poducteur "+ nbProd+" rentre dans le game");
-		nbProd++;
-//		System.out.println(nbProd);
+		System.out.println("le poducteur "+ nbProdAlive+" rentre dans le game");
+		nbProdAlive++;
 		
 	}
 	public synchronized void fin_prod(){
 		
-		nbProd-- ; 
-		System.out.println("le poducteur "+ nbProd+" sort de la game");
+		nbProdAlive-- ; 
+		System.out.println("le poducteur "+ nbProdAlive+" sort de la game");
 	}
 	
 	// return vrai si il n'y a plus de pproducteur et que le bufer est vide
 	public synchronized boolean fin() {
-		boolean resultat = ((nbProd == 0) && ( enAttente == 0 ));
+		boolean resultat = ((nbProdAlive == 0) && ( enAttente == 0 ));
 		//System.out.println("resultat fin = "+ resultat);
 		
 		//On s'assure qu'il n'y pas de nouveau producteur cree. 
 		if(resultat){
 			notifyAll();
 		}
-		return (nbProd == 0) && ( enAttente == 0 );
+		return (nbProdAlive == 0) && ( enAttente == 0 );
 	} 
 }
