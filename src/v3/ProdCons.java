@@ -7,14 +7,14 @@ import jus.poc.prodcons._Consommateur;
 import jus.poc.prodcons._Producteur;
 
 public class ProdCons implements Tampon {
-	private int N, enAttente ; // N est le nombre maximum de messages que peut contenir le buffer. 
+	protected int N, enAttente ; // N est le nombre maximum de messages que peut contenir le buffer. 
 	 
-	private int in = 0 , out = 0,nbProd = 0 ; 
-	private Semaphore mutex ; 
-	private Semaphore RessourceALire ; 
-	private Semaphore Place ; 
-	private Observateur Ob ; 
-	private Message[] buffer ;
+	protected int in = 0 , out = 0,nbProd = 0 ; 
+	protected Semaphore mutex ; 
+	protected Semaphore RessourceALire ; 
+	protected Semaphore Place ; 
+	protected Observateur Ob ; 
+	protected Message[] buffer ;
 	
 	
 	public ProdCons( int n, Observateur observateur ){
@@ -55,7 +55,7 @@ public class ProdCons implements Tampon {
 	}
 	
 	// fonction permettant de d�poser une ressource dans le tampon. 
-	public synchronized void put(_Producteur p, Message m) throws Exception, InterruptedException {
+	public void put(_Producteur p, Message m) throws Exception, InterruptedException {
 		
 		// on s'assure qu'il y a de la place pour y palcer une ressource 
 		Place.P() ;  

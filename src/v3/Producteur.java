@@ -19,7 +19,7 @@ public class Producteur extends Acteur implements _Producteur{
 	private Observateur Ob; 
 	
 
-	protected Producteur(int id, ProdCons buf, Observateur observateur, int moyenneTempsDeTraitement,
+	public Producteur(int id, ProdCons buf, Observateur observateur, int moyenneTempsDeTraitement,
 			int deviationTempsDeTraitement, int nbm) throws ControlException {
 		
 		super(Acteur.typeProducteur, observateur, moyenneTempsDeTraitement, deviationTempsDeTraitement);
@@ -36,7 +36,6 @@ public class Producteur extends Acteur implements _Producteur{
 		
 	}
 
-	@Override
 	public int nombreDeMessages() {
 		return nbMessageafaire;
 	}
@@ -45,7 +44,7 @@ public class Producteur extends Acteur implements _Producteur{
 		
 		buffer.nouveau_prod();
 		for(int i = 0 ; i < nbMessageafaire ; i++  ){
-			MessageX m = new MessageX(i,"contenu du message ");
+			MessageX m = new MessageX(this.idProducteur*100+i,"contenu du message ");
 			int temps= alea.next();
 			// if(TestProdCons.outputs) System.out.println("temps = "+ temps);
 			try {
@@ -64,11 +63,9 @@ public class Producteur extends Acteur implements _Producteur{
 			}
 			
 			try {
-
-					buffer.put(this, m);
 					if(TestProdCons.outputs) blabla(m);
-					
-					
+					buffer.put(this, m);
+										
 			} catch (InterruptedException e) {
 				System.out.println("erreur de mise dans le tampon");
 				e.printStackTrace();

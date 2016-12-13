@@ -8,7 +8,7 @@ public class TestProdCons extends Simulateur {
 	private ProdCons buffer ;
 	private ArrayList<Producteur> lprod ;
 	private ArrayList<Consommateur> lcons ;
-	public static final Boolean outputs = true;
+	public static Boolean outputs = true;
 	
 	
 	// liste des options

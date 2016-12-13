@@ -16,7 +16,7 @@ public class Consommateur extends Acteur implements _Consommateur {
 	private int idConsommateur ; 
 	private Observateur Ob; 
 	
-	protected Consommateur(int id , Observateur observateur, int moyenneTempsDeTraitement,
+	public Consommateur(int id , Observateur observateur, int moyenneTempsDeTraitement,
 		int deviationTempsDeTraitement,ProdCons buf) throws ControlException {
 		super(Acteur.typeConsommateur, observateur, moyenneTempsDeTraitement, deviationTempsDeTraitement);
 		

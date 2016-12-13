@@ -1,9 +1,11 @@
 package v4;
+
+import v3.*;
 import java.util.ArrayList;
 
 import jus.poc.prodcons.*;
 
-public class TestProdCons extends Simulateur {
+public class TestProdCons extends v3.TestProdCons {
 	private Observateur Ob ; 
 	private ProdCons buffer ;
 	private ArrayList<Producteur> lprod ;
@@ -11,15 +13,6 @@ public class TestProdCons extends Simulateur {
 	
 	
 	// liste des options
-	protected static int nbProd;
-	protected static int nbCons;
-	protected static int nbBuffer;
-	protected static int tempsMoyenProduction;
-	protected static int deviationTempsMoyenProduction;
-	protected static int tempsMoyenConsommation;
-	protected static int deviationTempsMoyenConsommation;
-	protected static int nombreMoyenDeProduction;
-	protected static int deviationNombreMoyenDeProduction;
 	protected static int nombreMoyenNbExemplaire;
 	protected static int deviationNombreMoyenNbExemplaire;
 	
@@ -28,7 +21,16 @@ public class TestProdCons extends Simulateur {
 	public TestProdCons(Observateur observateur){
 		super(observateur);
 		Ob = observateur;
+		v3.TestProdCons.outputs=true;
 		init("options.4.xml");
+		
+		if((nombreMoyenNbExemplaire+deviationNombreMoyenNbExemplaire)>nbCons)
+			try {
+				throw new Exception("Risque d'avoir plus d'exemplaires que de consommateurs");
+			} catch (Exception e2) {
+				e2.printStackTrace();
+				System.out.println(e2.getMessage());
+			}
 		
 		Aleatoire alea = new Aleatoire(nombreMoyenDeProduction, deviationNombreMoyenDeProduction) ;
 		try {
@@ -38,21 +40,21 @@ public class TestProdCons extends Simulateur {
 			e1.printStackTrace();
 		}
 		
-		buffer = new ProdCons(nbBuffer, Ob);
+		buffer = new ProdCons(nbBuffer, Ob, nombreMoyenNbExemplaire, deviationNombreMoyenNbExemplaire);
 		
 		//creation des porducteurs
 		lprod = new ArrayList<>();
 		for(int i = 0 ; i< nbProd ; i ++ ){
 			try {
 				Producteur p = new Producteur(i, buffer,
-						Ob,tempsMoyenProduction, deviationNombreMoyenDeProduction,alea.next(),nombreMoyenNbExemplaire,deviationNombreMoyenNbExemplaire  );
+						Ob,tempsMoyenProduction, deviationNombreMoyenDeProduction,alea.next() );
 				lprod.add(p);
 				Ob.newProducteur(p);
 			} catch (ControlException e) {
 				System.out.println("erreur a la creation de Producteur");
 				e.printStackTrace();
-			
 			}
+			
 		}
 		
 		//mise en place des consomateurs
@@ -70,55 +72,6 @@ public class TestProdCons extends Simulateur {
 		}
 		
 	}
-	
-	
-	// On lance chaqu'un des consomateurs dans lcons et producteur dans lprod  
-	protected void run() throws Exception{
-		
-		for (int i=0;i<nbProd;i++){
-			lprod.get(i).start();
-		}
-		for (int i=0;i<nbCons;i++){
-			lcons.get(i).start();
-		}	
-		
-	}	
-	
-//	protected <type> option;
-	
-	/**
-	* Retreave the parameters of the application.
-	* @param file the final name of the file containing the options.
-	*/
-	protected static void init(String file) {
-	// retreave the parameters of the application
-	final class Properties extends java.util.Properties {
-	private static final long serialVersionUID = 1L;
-	public int get(String key){return Integer.parseInt(getProperty(key));}
-		public Properties(String file) {
-			try{
-				loadFromXML(ClassLoader.getSystemResourceAsStream(file));
-			}catch(Exception e){e.printStackTrace();}
-			
-			}
-		}
-		Properties option = new Properties("options/"+file);
-		nbProd = option.get("nbProd");
-		System.out.println("nb_prod =" + nbProd);
-		nbCons = option.get("nbCons");
-		System.out.println("nbCons = "+ nbCons);
-		nbBuffer = option.get("nbBuffer");
-		tempsMoyenProduction = option.get("tempsMoyenProduction");
-		deviationTempsMoyenProduction = option.get("deviationTempsMoyenProduction");
-		tempsMoyenConsommation = option.get("tempsMoyenConsommation");
-		deviationTempsMoyenConsommation = option.get("deviationTempsMoyenConsommation");
-		nombreMoyenDeProduction = option.get("nombreMoyenDeProduction");
-		deviationNombreMoyenDeProduction = option.get("deviationNombreMoyenDeProduction");
-		nombreMoyenNbExemplaire = option.get("nombreMoyenNbExemplaire");
-		deviationNombreMoyenNbExemplaire = option.get("deviationNombreMoyenNbExemplaire");
-	}
-//	
-//	<option> = option.getProperty("option");
 	
 	
 	public static void main(String[] args){new TestProdCons(new Observateur()).start();}
