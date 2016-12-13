@@ -107,10 +107,13 @@ public class ProdCons implements Tampon {
 	
 	// return vrai si il n'y a plus de pproducteur et que le bufer est vide
 	public boolean fin() {
-		lock.lock();
 		boolean resultat = ((nbProd == 0) && ( enAttente == 0 ));
+		if (resultat){
+			lock.lock();
+			notEmpty.signalAll();
+			lock.unlock();
+		}
 		//if(TestProdCons.outPuts)  System.out.println("resultat fin = "+ resultat);
-		lock.unlock();
 		return (nbProd == 0) && ( enAttente == 0 );
 	} 
 }
