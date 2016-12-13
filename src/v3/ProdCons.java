@@ -31,22 +31,25 @@ public class ProdCons implements Tampon {
 	// fonction permettant de retirer une ressource dans le tampon. 
 	public Message get(_Consommateur c) throws Exception, InterruptedException {
 		
-		//test pour savoir s'il y'a des messages à lire
+		//test pour savoir s'il y'a des messages ï¿½ lire
 		RessourceALire.P() ; 
 		Message m;
 			
-		// gestion du buffer protégé par les mutex
-		mutex.P();
-//		synchronized (this) {
+		// gestion du buffer protï¿½gï¿½ par les mutex
+		
+		if(enAttente()>0){
 			m = buffer[out];
 			Ob.retraitMessage(c, m);
 			out = (out+ 1) % N ;
-			enAttente-- ; 
-		mutex.V();
-//		}
-		
-		//indique qu'on a libéré une place dans le buffeur pour les un Thread Producteur.
-		Place.V();
+			mutex.P();
+			
+				enAttente-- ; 
+			mutex.V();
+			//indique qu'on a libï¿½rï¿½ une place dans le buffeur pour les un Thread Producteur.
+			Place.V();
+		}else{
+			m=null;
+		}
 		
 		return m;
 	}
@@ -57,14 +60,13 @@ public class ProdCons implements Tampon {
 		// on s'assure qu'il y a de la place pour y palcer une ressource 
 		Place.P() ;  
 		
-		//section critique protiégé par les mutex
+		//section critique protiï¿½gï¿½ par les mutex
+		Ob.depotMessage(p, m);
+		buffer[in] = m ;
+		in = (in +1) %N;
 		mutex.P();
-//		synchronized (this) {
-			Ob.depotMessage(p, m);
-			buffer[in] = m ;
-			in = (in +1) %N;
+		
 			enAttente++ ;
-//		}
 		mutex.V();
 		
 		//indique qu'une ressource est disponible pour reveiller 
@@ -80,7 +82,7 @@ public class ProdCons implements Tampon {
 	}
 
 	public synchronized void nouveau_prod(){
-		System.out.println("le poducteur "+ nbProd+" rentre dans le game");
+		if(TestProdCons.outputs) System.out.println("le poducteur "+ nbProd+" rentre dans le game");
 		nbProd++;
 //		System.out.println(nbProd);
 		
@@ -88,17 +90,16 @@ public class ProdCons implements Tampon {
 	public synchronized void fin_prod(){
 		
 		nbProd-- ; 
-		System.out.println("le poducteur "+ nbProd+" sort de la game");
+		if(TestProdCons.outputs) System.out.println("le poducteur "+ nbProd+" sort de la game");
 	}
 	
 	// return vrai si il n'y a plus de pproducteur et que le bufer est vide
 	public synchronized boolean fin() {
 		boolean resultat = ((nbProd == 0) && ( enAttente == 0 ));
-		//System.out.println("resultat fin = "+ resultat);
+		//if(TestProdCons.outPuts)  System.out.println("resultat fin = "+ resultat);
 		
-		//On s'assure qu'il n'y pas de nouveau producteur cree. 
 		if(resultat){
-			notifyAll();
+			RessourceALire.V();
 		}
 		return (nbProd == 0) && ( enAttente == 0 );
 	} 

@@ -47,7 +47,7 @@ public class Producteur extends Acteur implements _Producteur{
 		for(int i = 0 ; i < nbMessageafaire ; i++  ){
 			MessageX m = new MessageX(i,"contenu du message ");
 			int temps= alea.next();
-			System.out.println("temps = "+ temps);
+			// if(TestProdCons.outputs) System.out.println("temps = "+ temps);
 			try {
 				Ob.productionMessage(this, m, temps);
 			} catch (ControlException e2) {
@@ -64,11 +64,10 @@ public class Producteur extends Acteur implements _Producteur{
 			}
 			
 			try {
-				synchronized (buffer) {
+
 					buffer.put(this, m);
-					blabla(m);
+					if(TestProdCons.outputs) blabla(m);
 					
-				}
 					
 			} catch (InterruptedException e) {
 				System.out.println("erreur de mise dans le tampon");

@@ -41,14 +41,14 @@ public class Consommateur extends Acteur implements _Consommateur {
 		// On simule un temps de calcul une fois le message lu.
 		Aleatoire alea = new Aleatoire(moyenneTempsDeTraitement(), deviationTempsDeTraitement());
 		
-		System.out.println("Consomateur "+ idConsommateur+ " rentre dans la game");
+		if(TestProdCons.outputs) System.out.println("Consomateur "+ idConsommateur+ " rentre dans la game");
 		
 		while(!buffer.fin()){
 			
 			try {
 				
 				m = (MessageX) buffer.get(this);
-				blabla(m);
+				if(TestProdCons.outputs) blabla(m);
 				if(m!=null)nbMessagelu++ ; 
 				
 			} catch (Exception e) {
@@ -66,7 +66,7 @@ public class Consommateur extends Acteur implements _Consommateur {
 			
 		}
 		
-	System.out.println("Consomateur "+ idConsommateur+ " sort de la game");
+		if(TestProdCons.outputs) System.out.println("Consomateur "+ idConsommateur+ " sort de la game");
 	}
 	
 	// cette fonction permet de dire que fait les consomateur

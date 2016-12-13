@@ -8,6 +8,7 @@ public class TestProdCons extends Simulateur {
 	private ProdCons buffer ;
 	private ArrayList<Producteur> lprod ;
 	private ArrayList<Consommateur> lcons ;
+	public static final Boolean outputs = true;
 	
 	
 	// liste des options
@@ -20,7 +21,7 @@ public class TestProdCons extends Simulateur {
 	protected static int deviationTempsMoyenConsommation;
 	protected static int nombreMoyenDeProduction;
 	protected static int deviationNombreMoyenDeProduction;
-	
+
 	
 	//On remplie dans cette classe les deux listes lcons et lprod par le nb voulue
 	public TestProdCons(Observateur observateur){
@@ -95,9 +96,9 @@ public class TestProdCons extends Simulateur {
 		}
 		Properties option = new Properties("options/"+file);
 		nbProd = option.get("nbProd");
-		System.out.println("nb_prod =" + nbProd);
+		if(TestProdCons.outputs) System.out.println("nb_prod =" + nbProd);
 		nbCons = option.get("nbCons");
-		System.out.println("nbCons = "+ nbCons);
+		if(TestProdCons.outputs) System.out.println("nbCons = "+ nbCons);
 		nbBuffer = option.get("nbBuffer");
 		tempsMoyenProduction = option.get("tempsMoyenProduction");
 		deviationTempsMoyenProduction = option.get("deviationTempsMoyenProduction");

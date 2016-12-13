@@ -34,7 +34,7 @@ public class ProdCons implements Tampon {
 	// fonction permettant de retirer une ressource dans le tampon. 
 	public Message get(_Consommateur c) throws Exception, InterruptedException {
 		// tant qu'il n'y a rien a lire le processus attend. 
-//		System.out.println("coucou je suis le consomateur "+ ((Consommateur) c).get_id() );
+//		if(TestProdCons.outputs) System.out.println("coucou je suis le consomateur "+ ((Consommateur) c).get_id() );
 		Message m;
 		synchronized (mc){
 			// gestion du buffer
@@ -80,27 +80,27 @@ public class ProdCons implements Tampon {
 	}
 
 	public synchronized void nouveau_prod(){
-		System.out.println("le poducteur "+ nbProd+" rentre dans le game");
+		if(TestProdCons.outputs) System.out.println("le poducteur "+ nbProd+" rentre dans le game");
 		nbProd++;
-//		System.out.println(nbProd);
+//		if(TestProdCons.outputs) System.out.println(nbProd);
 		
 	}
 	public synchronized void fin_prod(){
 		
 		nbProd-- ; 
-		System.out.println("le poducteur "+ nbProd+" sort de la game");
+		if(TestProdCons.outputs) System.out.println("le poducteur "+ nbProd+" sort de la game");
 	}
 	
 	// return vrai si il n'y a plus de pproducteur et que le bufer est vide
 	public boolean fin() {
 		boolean resultat = ((nbProd == 0) && ( nbplein == 0 ));
-		//System.out.println("resultat fin = "+ resultat);
+		//if(TestProdCons.outputs) System.out.println("resultat fin = "+ resultat);
 		
 		
 		
 		//On s'assure qu'il n'y pas de nouveau producteur crée. 
 		if(resultat){
-			synchronized(mc){mc.notifyAll();}
+			synchronized(mc){mc.notify();}
 		}
 		
 		return (nbProd == 0) && ( nbplein == 0 );

@@ -43,26 +43,23 @@ public class Consommateur extends Acteur implements _Consommateur {
 		// On simule un temps de calcul une fois le message lu.
 		Aleatoire alea = new Aleatoire(moyenneTempsDeTraitement(), deviationTempsDeTraitement());
 		
-		System.out.println("Consomateur "+ idConsommateur+ " rentre dans la game");
+		if(TestProdCons.outputs) System.out.println("Consomateur "+ idConsommateur+ " rentre dans la game");
 		
 		while(!buffer.fin()){
 			
 			try {
+				 			
+				m = (MessageX) buffer.get(this);
+				if(TestProdCons.outputs) blabla(m);
+				if(m!=null)nbMessagelu++ ;
 				
-				// le synchronise sert pour afficher dans le bon odre les éléments. 
-//				synchronized (buffer) {
-				
-					m = (MessageX) buffer.get(this);
-					blabla(m);
-//				}
-				nbMessagelu++ ; 
 			} catch (Exception e) {
 				System.out.println(" probleme recuperation du message");
 				e.printStackTrace();
 			} 
 			temps = gen_temps.next();
 			try {
-				Ob.consommationMessage(this, m, temps);
+				if(m!=null) Ob.consommationMessage(this, m, temps);
 			} catch (ControlException e1) {
 				System.out.println("Erreur Observation consomation message");
 				e1.printStackTrace();
@@ -76,13 +73,17 @@ public class Consommateur extends Acteur implements _Consommateur {
 			
 		}
 		
-	System.out.println("Consomateur "+ idConsommateur+ " sort de la game");
+		if(TestProdCons.outputs) System.out.println("Consomateur "+ idConsommateur+ " sort de la game");
 	}
 	
 	// cette fonction permet de dire que fait les consomateur
 	public void blabla(MessageX m ){
 		String time = new SimpleDateFormat("mm:ss:S").format(new Date());
-		System.out.println(time +": Je suis le consomateur d'id "+ idConsommateur + ". Je lis le message"+ m.get_id()+"\n" );
+		if(m!=null){
+			System.out.println(time +": Je suis le consomateur d'id "+ idConsommateur + ". Je lis le message"+ m.get_id()+"\n" );
+		}else{
+			System.out.println(time +": Je suis le consomateur d'id "+ idConsommateur + ". IL n'y a plus de message pour moi\n" );
+		}
 	}	
 			
 }

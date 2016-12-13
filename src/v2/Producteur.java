@@ -57,11 +57,8 @@ public class Producteur extends Acteur implements _Producteur{
 			}
 			
 			try {
-				synchronized (buffer) {
 					buffer.put(this, m);
-					blabla(m);
-					
-				}
+					if(TestProdCons.outputs) blabla(m);
 					
 			} catch (InterruptedException e) {
 				System.out.println("erreur de mise dans le tampon");
