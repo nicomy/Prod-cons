@@ -93,13 +93,12 @@ public class ProdCons implements Tampon {
 		exemplairesRestant[in] = aleaExemplaires.next();
 		in = (in +1) %N;
 		
-		mutex.V();
-		
 		enAttente++ ;
 		
 		
 		//indique qu'une ressource est disponible pour reveiller 
 		RessourceALire.V();
+		synchronized(m){mutex.V();m.wait();}
 		
 	}
 
