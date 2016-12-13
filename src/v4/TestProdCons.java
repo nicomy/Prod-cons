@@ -1,4 +1,5 @@
 package v4;
+
 import java.util.ArrayList;
 
 import jus.poc.prodcons.*;
@@ -8,6 +9,7 @@ public class TestProdCons extends Simulateur {
 	private ProdCons buffer ;
 	private ArrayList<Producteur> lprod ;
 	private ArrayList<Consommateur> lcons ;
+	public static Boolean outputs = true;
 	
 	
 	// liste des options
@@ -28,7 +30,16 @@ public class TestProdCons extends Simulateur {
 	public TestProdCons(Observateur observateur){
 		super(observateur);
 		Ob = observateur;
+		v3.TestProdCons.outputs=true;
 		init("options.4.xml");
+		
+		if((nombreMoyenNbExemplaire+deviationNombreMoyenNbExemplaire)>nbCons)
+			try {
+				throw new Exception("Risque d'avoir plus d'exemplaires que de consommateurs");
+			} catch (Exception e2) {
+				e2.printStackTrace();
+				System.out.println(e2.getMessage());
+			}
 		
 		Aleatoire alea = new Aleatoire(nombreMoyenDeProduction, deviationNombreMoyenDeProduction) ;
 		try {
@@ -38,21 +49,21 @@ public class TestProdCons extends Simulateur {
 			e1.printStackTrace();
 		}
 		
-		buffer = new ProdCons(nbBuffer, Ob);
+		buffer = new ProdCons(nbBuffer, Ob, nombreMoyenNbExemplaire, deviationNombreMoyenNbExemplaire);
 		
 		//creation des porducteurs
 		lprod = new ArrayList<>();
 		for(int i = 0 ; i< nbProd ; i ++ ){
 			try {
 				Producteur p = new Producteur(i, buffer,
-						Ob,tempsMoyenProduction, deviationNombreMoyenDeProduction,alea.next(),nombreMoyenNbExemplaire,deviationNombreMoyenNbExemplaire  );
+						Ob,tempsMoyenProduction, deviationNombreMoyenDeProduction,alea.next() );
 				lprod.add(p);
 				Ob.newProducteur(p);
 			} catch (ControlException e) {
 				System.out.println("erreur a la creation de Producteur");
 				e.printStackTrace();
-			
 			}
+			
 		}
 		
 		//mise en place des consomateurs
@@ -67,24 +78,23 @@ public class TestProdCons extends Simulateur {
 				System.out.println("erreur creation consomateur");
 				e.printStackTrace();
 			}
-		}
-		
+		}		
 	}
-	
 	
 	// On lance chaqu'un des consomateurs dans lcons et producteur dans lprod  
 	protected void run() throws Exception{
 		
 		for (int i=0;i<nbProd;i++){
+//				if (lprod.get(i)==null) System.out.println("on peut pas acceder � un Prdo\n");
+//				else System.out.println(lprod.get(i).toString());
 			lprod.get(i).start();
 		}
 		for (int i=0;i<nbCons;i++){
+//				System.out.println(c.get(i).toString());
 			lcons.get(i).start();
 		}	
-		
-	}	
-	
-//	protected <type> option;
+	}
+	//	protected <type> option;
 	
 	/**
 	* Retreave the parameters of the application.
@@ -104,9 +114,9 @@ public class TestProdCons extends Simulateur {
 		}
 		Properties option = new Properties("options/"+file);
 		nbProd = option.get("nbProd");
-		System.out.println("nb_prod =" + nbProd);
+		if(TestProdCons.outputs) System.out.println("nb_prod =" + nbProd);
 		nbCons = option.get("nbCons");
-		System.out.println("nbCons = "+ nbCons);
+		if(TestProdCons.outputs) System.out.println("nbCons = "+ nbCons);
 		nbBuffer = option.get("nbBuffer");
 		tempsMoyenProduction = option.get("tempsMoyenProduction");
 		deviationTempsMoyenProduction = option.get("deviationTempsMoyenProduction");
@@ -119,6 +129,7 @@ public class TestProdCons extends Simulateur {
 	}
 //	
 //	<option> = option.getProperty("option");
+	
 	
 	
 	public static void main(String[] args){new TestProdCons(new Observateur()).start();}
