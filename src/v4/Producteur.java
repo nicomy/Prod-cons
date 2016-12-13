@@ -45,7 +45,7 @@ public class Producteur extends Acteur implements _Producteur{
 		
 		buffer.nouveau_prod();
 		for(int i = 0 ; i < nbMessageafaire ; i++  ){
-			MessageX m = new MessageX(this.idProducteur*100+i,"contenu du message ");
+			MessageX m = new MessageX(this.identification()*100+i,"contenu du message ");
 			int temps= alea.next();
 			// if(TestProdCons.outputs) System.out.println("temps = "+ temps);
 			try {
@@ -82,7 +82,7 @@ public class Producteur extends Acteur implements _Producteur{
 	
 	public void blabla(MessageX m ){
 		String time = new SimpleDateFormat("mm:ss:S").format(new Date());
-		System.out.println(time +": Je suis le produceur d'id "+ idProducteur + "j'envoi le message"+ m.get_id()+"\n" );
+		System.out.println(time +": Je suis le produceur d'id "+ this.identification() + "j'envoi le message"+ m.get_id()+"\n" );
 		
 		
 	}

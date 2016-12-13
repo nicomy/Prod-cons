@@ -2,7 +2,7 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
 <comment>Configuration</comment>
-<entry key="nbProd">1</entry>
+<entry key="nbProd">10</entry>
 <entry key="nbCons">10</entry>
 <entry key="nbBuffer">12</entry>
 <entry key="tempsMoyenProduction">100</entry>

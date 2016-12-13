@@ -33,8 +33,9 @@ public class Consommateur extends Acteur implements _Consommateur {
 		return nbMessagelu;
 	}
 	
+	//redondant et incohérent avec Acteur.identification() : différence de 1
 	public int get_id(){
-		return idConsommateur ;
+		return this.identification() ;
 	}
 	
 	public void run(){
@@ -44,7 +45,7 @@ public class Consommateur extends Acteur implements _Consommateur {
 		// On simule un temps de calcul une fois le message lu.
 		Aleatoire alea = new Aleatoire(moyenneTempsDeTraitement(), deviationTempsDeTraitement());
 		
-		if(TestProdCons.outputs) System.out.println("Consomateur "+ idConsommateur+ " rentre dans la game");
+		if(TestProdCons.outputs) System.out.println("Consomateur "+ this.identification()+ " rentre dans la game");
 		
 		while(!buffer.fin()){
 			
@@ -74,16 +75,16 @@ public class Consommateur extends Acteur implements _Consommateur {
 			
 		}
 		
-		if(TestProdCons.outputs) System.out.println("Consomateur "+ idConsommateur+ " sort de la game");
+		if(TestProdCons.outputs) System.out.println("Consomateur "+ this.identification()+ " sort de la game");
 	}
 	
 	// cette fonction permet de dire que fait les consomateur
 	public void blabla(MessageX m ){
 		String time = new SimpleDateFormat("mm:ss:S").format(new Date());
 		if(m!=null){
-			System.out.println(time +": Je suis le consomateur d'id "+ idConsommateur + ". Je lis le message"+ m.get_id()+"\n" );
+			System.out.println(time +": Je suis le consomateur d'id "+ this.identification() + ". Je lis le message"+ m.get_id()+"\n" );
 		}else{
-			System.out.println(time +": Je suis le consomateur d'id "+ idConsommateur + ". IL n'y a plus de message pour moi\n" );
+			System.out.println(time +": Je suis le consomateur d'id "+ this.identification() + ". IL n'y a plus de message pour moi\n" );
 		}
 	}	
 			
