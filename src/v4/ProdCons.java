@@ -50,10 +50,12 @@ public class ProdCons implements Tampon {
 		
 		Consommateur cons = (Consommateur ) c ; 
 		
+		
 		//test pour savoir s'il y'a des messages à lire
 		RessourceALire.P() ; 
 		Message m;
-			
+		
+		
 		if(enAttente>0){
 			// gestion du buffer protï¿½gï¿½ par les mutex
 			mutex.P();
@@ -66,9 +68,10 @@ public class ProdCons implements Tampon {
 			if (((MessageX) m).est_consomme()){
 				
 				mutex.P();
+				
+				out= (out+1)  %N ;
 				//On libère son producteur
 				ProdEnAttente[((MessageX) m).get_idProd()].V();
-				
 				//on libère tous les consomateurs bloqué ; 
 				for (Consommateur ctmp : ConsBloque){
 					ConsEnAttent[ctmp.get_id()].V(); 
@@ -77,8 +80,11 @@ public class ProdCons implements Tampon {
 				
 				//indique qu'on a libéré une place dans le buffeur pour un Thread Producteur.
 				Place.V();
+				
+				mutex.V();
 			}
-			else{// On bloque le consommmateur. 
+			else{
+				// On bloque le consommmateur. 
 				ConsBloque.add(cons );
 				ConsEnAttent[cons.get_id()].P() ;
 			}
@@ -86,35 +92,32 @@ public class ProdCons implements Tampon {
 			m=null;
 		}	
 		
-		System.out.println("sortie par "+cons.get_id() +" du get ");
 		return m;
 		
 	}
 	
 	public  void put(_Producteur p, Message m) throws Exception, InterruptedException {
 		
-		
 		Place.P();
 		
 		mutex.P();
-		
 			Ob.depotMessage(p, m);
 			buffer[in] = m ;
 			in = (in +1) %N;
 			NbExplaireRestant = ((MessageX) m).get_NbExemplaire() ;
 			enAttente += NbExplaireRestant ; 
+			System.out.println(NbExplaireRestant);
 			((Producteur) p).blabla((MessageX) m);
 			
+			//indique qu'il y a un Certains nombre de ressource à prendre 
+			for(int i = 0 ; i < ((MessageX) m).get_NbExemplaire() ; i ++ ){
+				RessourceALire.V();
+			}
 		mutex.V();
 		
-		//indique qu'il y a un Certains nombre de ressource à prendre 
-		for(int i = 0 ; i < ((MessageX) m).get_NbExemplaire() ; i ++ ){
-			RessourceALire.V();
-		}
 		
 		//On bloque le Prodcteur associé. 
 		ProdEnAttente[((Producteur) p).get_id()].P();
-
 		
 	}
 	public synchronized int enAttente() {
