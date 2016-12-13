@@ -60,8 +60,7 @@ public class ProdCons implements Tampon {
 		//test pour savoir s'il y'a des messages à lire
 		System.out.println("avant ressource à lire "+RessourceALire.get_n() );
 		RessourceALire.P() ; 
-		
-		System.out.println("avant casebuffer");
+//		System.out.println("avant casebuffer");
 		
 		CaseBuffer[out].P();
 		Message m;
