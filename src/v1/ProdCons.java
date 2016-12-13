@@ -1,5 +1,8 @@
 package v1;
 
+import java.util.ArrayList;
+import java.util.Date;
+
 import jus.poc.prodcons.Message;
 import jus.poc.prodcons.Tampon;
 import jus.poc.prodcons._Consommateur;
@@ -15,6 +18,7 @@ public class ProdCons implements Tampon {
 	private Object mc;		// Moniteur consommateurs
 	
 	private Message[] buffer ;
+	private ArrayList<MessageX> l_mes ; 
 	
 	
 	public ProdCons( int n ){
@@ -24,6 +28,8 @@ public class ProdCons implements Tampon {
 		buffer = new Message[N]; 
 		mc = new Object();
 		mp = new Object();
+		
+		l_mes = new ArrayList<>(); 
 	}
 
 	
@@ -42,6 +48,7 @@ public class ProdCons implements Tampon {
 			
 			if(nbplein>0){
 				m= buffer[out];
+				((MessageX) m).setLecture(new Date()); 
 				out = (out+1 ) % N ;
 				//on d�cremente le nombre de ressource dispo
 				nbplein -- ;
@@ -63,9 +70,11 @@ public class ProdCons implements Tampon {
 		synchronized(mp){
 			while(nbvide == 0 ) mp.wait() ;
 			
-			//mettre a jour le buffer 
 			
+			l_mes.add((MessageX) m);
+			//mettre a jour le buffer 
 			buffer[in] = m ;
+			((MessageX) m).setEcriture(new Date());
 			in = (in +1) %N;
 	
 				//on incremente le nombre de ressource dispo 
@@ -86,7 +95,6 @@ public class ProdCons implements Tampon {
 		
 	}
 	public synchronized void fin_prod(){
-		
 		nbProd-- ; 
 		if(TestProdCons.outputs) System.out.println("le poducteur "+ nbProd+" sort de la game");
 	}
@@ -104,4 +112,17 @@ public class ProdCons implements Tampon {
 		
 		return (nbProd == 0) && ( nbplein == 0 );
 	} 
+	
+	
+	public void test( Date date_fin){
+		boolean ordreConsomattion_Correct = true ; 
+		
+	
+		
+		
+		
+	}
+	
+	
+	
 }

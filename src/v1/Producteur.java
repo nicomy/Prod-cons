@@ -8,6 +8,7 @@ import jus.poc.prodcons.Aleatoire;
 import jus.poc.prodcons.ControlException;
 import jus.poc.prodcons.Observateur;
 import jus.poc.prodcons._Producteur;
+import v5.TestProdCons;
 
 public class Producteur extends Acteur implements _Producteur{
 	
@@ -40,7 +41,7 @@ public class Producteur extends Acteur implements _Producteur{
 		
 		buffer.nouveau_prod();
 		for(int i = 0 ; i < nbMessageafaire ; i++  ){
-			MessageX m = new MessageX(i,"contenu");
+			MessageX m = new MessageX(i,"contenu", new Date());
 			
 			
 			int temp= alea.next();
@@ -55,6 +56,7 @@ public class Producteur extends Acteur implements _Producteur{
 			try {
 				
 				buffer.put(this, m);
+			
 				if(TestProdCons.outputs)blabla(m);
 					
 			} catch (InterruptedException e) {
@@ -67,7 +69,7 @@ public class Producteur extends Acteur implements _Producteur{
 			
 		}
 		buffer.fin_prod();
-	}
+ 	}
 	
 	
 	public void blabla(MessageX m ){
