@@ -46,84 +46,6 @@ public class ProdCons implements Tampon {
 		
 	}
 
-
-	
-	
-//	// je pense pas qu'un synchronise soit necessaire car il est fait à l'appel de la fonction
-//	public  void ecrire(Producteur p, MessageX m) throws InterruptedException, Exception{
-//		put (p,m);
-//		System.out.println("le producteur " + p.get_id() + " à posé son message et va attendre") ;
-//		ProdEnAttente.P();
-//		System.out.println("le producteur " + p.get_id() + " a fini d'attendre") ;
-//	}
-//	
-	
-	// fonction permettant de retirer une ressource dans le tampon. 
-//	public  MessageX get(_Consommateur c) throws Exception, InterruptedException {
-//		
-//		RessourceALire.P() ; 
-//		MessageX m;
-//		
-//		mutex.P();
-//			m = (MessageX) buffer[out];
-//			m.lecture();
-//			Ob.retraitMessage(c, m);
-//			((Consommateur) c).blabla(m);
-//		mutex.V();
-//		
-//		if(m.est_consomme()) {
-//			Place.V();
-//		}
-//		return m;
-//	}
-//	
-//	public  void put(_Producteur p, Message m) throws Exception, InterruptedException {
-//		
-//		Place.P() ;  
-//		
-//		mutex.P();
-//			Ob.depotMessage(p, m);
-//			buffer[in] = m ;
-//			in = (in +1) %N;
-//			enAttente++ ;
-//			((Producteur) p).blabla((MessageX) m);
-//		mutex.V();
-//		
-//		
-//		for(int i = 0 ; i < ((MessageX) m).get_NbExemplaire() ; i ++ ){
-//			RessourceALire.V();
-//		}
-//	}
-//	
-	
-//	public  MessageX lire(Consommateur c) throws InterruptedException, Exception{
-//	
-//		MessageX m = null ;
-//		ConsServie.add(c);
-//	
-//		m = (MessageX) get(c);
-//		
-//		
-//		if(m.est_consomme()){
-//			
-//			for(int i = 0 ; i < ConsServie.size() ; i ++ ){
-//				ConsEnAttent.V();
-//			}
-//			ConsServie.clear();
-//			
-//			out = (out+ 1) % N ;
-//
-//			ProdEnAttente.V();
-//			enAttente-- ; 
-//		}
-//		
-//		while(!m.est_consomme()){
-//			ConsEnAttent.P();
-//		}
-//		
-//		return m ; 
-//	
-//	}
 	public  Message get(_Consommateur c) throws Exception, InterruptedException {
 		
 		Consommateur cons = (Consommateur ) c ; 
@@ -132,7 +54,7 @@ public class ProdCons implements Tampon {
 		RessourceALire.P() ; 
 		Message m;
 			
-		if(!fin()){
+		if(enAttente>0){
 			// gestion du buffer protï¿½gï¿½ par les mutex
 			mutex.P();
 				m = buffer[out];
@@ -147,7 +69,7 @@ public class ProdCons implements Tampon {
 				//On libère son producteur
 				ProdEnAttente[((MessageX) m).get_idProd()].V();
 				
-				//on libère tous les consomateurs blolqué ; 
+				//on libère tous les consomateurs bloqué ; 
 				for (Consommateur ctmp : ConsBloque){
 					ConsEnAttent[ctmp.get_id()].V(); 
 				}

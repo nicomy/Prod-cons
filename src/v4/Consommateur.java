@@ -48,7 +48,7 @@ public class Consommateur extends Acteur implements _Consommateur {
 		while(!buffer.fin()){
 			
 			try {
-					m = buffer.lire(this);
+					m = (MessageX) buffer.get(this);
 					nbMessagelu++ ; 
 			
 			} catch (Exception e) {

@@ -53,7 +53,7 @@ public class Producteur extends Acteur implements _Producteur{
 		for(int i = 0 ; i < nbMessageafaire ; i++  ){
 			temps= alea.next();
 			NbInteration = nbMAlea.next();
-			MessageX m = new MessageX(get_id()*100 + i,"contenu du message ",NbInteration);
+			MessageX m = new MessageX(get_id()*100 + i,"contenu du message ",NbInteration, get_id());
 			try {
 				Ob.productionMessage(this, m, temps);
 			} catch (ControlException e2) {
@@ -70,11 +70,7 @@ public class Producteur extends Acteur implements _Producteur{
 			}
 			
 			try {
-//				synchronized (buffer) {
-//					buffer.put(this, m);
-					buffer.ecrire(this, m);
-//					blabla(m);
-//				}
+					buffer.put(this, m);
 					
 			} catch (InterruptedException e) {
 				System.out.println("erreur de mise dans le tampon");

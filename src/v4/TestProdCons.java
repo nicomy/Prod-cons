@@ -38,7 +38,7 @@ public class TestProdCons extends Simulateur {
 			e1.printStackTrace();
 		}
 		
-		buffer = new ProdCons(nbBuffer, Ob);
+		buffer = new ProdCons(nbBuffer, Ob, nbProd,nbCons);
 		
 		//creation des porducteurs
 		lprod = new ArrayList<>();
