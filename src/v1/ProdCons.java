@@ -46,8 +46,8 @@ public class ProdCons implements Tampon {
 				//on d�cremente le nombre de ressource dispo
 				nbplein -- ;
 				
-			}else{ 		//si le programme à fini pendant que le consommateur attendait.
-				m=null;
+			}else{ 		
+				m=null;	//plus de message à produire ou dans le buffer. 
 			}
 			
 		}
@@ -98,9 +98,8 @@ public class ProdCons implements Tampon {
 		
 		
 		
-		//On s'assure qu'il n'y pas de nouveau producteur crée. 
 		if(resultat){
-			synchronized(mc){mc.notify();}
+			synchronized(mc){mc.notify();} //libère les consommateurs en attente d'un message qui ne viendra plus. 
 		}
 		
 		return (nbProd == 0) && ( nbplein == 0 );

@@ -43,7 +43,7 @@ public class ProdCons implements Tampon {
 			//indique qu'on a lib�r� une place dans le buffeur pour un Thread Producteur.
 			Place.V();
 		}else{
-			m=null;
+			m=null; //plus de message à produire ou dans le buffer. 
 		}
 		
 		return m;
@@ -93,7 +93,7 @@ public class ProdCons implements Tampon {
 		// if(TestProdCons.outputs) System.out.println("resultat fin = "+ resultat);
 		
 		if(resultat){
-			RessourceALire.V();
+			RessourceALire.V(); //libère les consommateurs en attente d'un message qui ne viendra plus. 
 		}
 		
 		return (nbProd == 0) && ( enAttente == 0 );
