@@ -33,13 +33,15 @@ public class ProdCons implements Tampon {
 		Message m;
 		
 		if(enAttente>0){
-			// gestion du buffer prot�g� par les mutex
 			
+			// gestion du buffer protege par les mutex
+			mutex.P();
 				m = buffer[out];
 				out = (out+ 1) % N ;
-			mutex.P();
 				enAttente-- ; 
 			mutex.V();
+			
+			
 			//indique qu'on a lib�r� une place dans le buffeur pour un Thread Producteur.
 			Place.V();
 		}else{
@@ -50,16 +52,16 @@ public class ProdCons implements Tampon {
 	}
 	
 	// fonction permettant de d�poser une ressource dans le tampon. 
-	public synchronized void put(_Producteur p, Message m) throws Exception, InterruptedException {
+	public void put(_Producteur p, Message m) throws Exception, InterruptedException {
 		
 		// on s'assure qu'il y a de la place pour y palcer une ressource 
 		Place.P() ;  
 		
 		//section critique proti�g� par les mutex
 		
+		mutex.P();
 			buffer[in] = m ;
 			in = (in +1) %N;
-		mutex.P();
 			enAttente++ ;
 		mutex.V();
 		
@@ -82,7 +84,6 @@ public class ProdCons implements Tampon {
 		
 	}
 	public synchronized void fin_prod(){
-		
 		nbProd-- ; 
 		if(TestProdCons.outputs) System.out.println("le poducteur "+ nbProd+" sort de la game");
 	}

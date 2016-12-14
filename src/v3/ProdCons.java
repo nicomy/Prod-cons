@@ -37,12 +37,11 @@ public class ProdCons implements Tampon {
 			
 		// gestion du buffer prot�g� par les mutex
 		
-		if(enAttente()>0){
-			m = buffer[out];
-			Ob.retraitMessage(c, m);
-			out = (out+ 1) % N ;
+		if(enAttente>0){
 			mutex.P();
-			
+				m = buffer[out];
+				Ob.retraitMessage(c, m);
+				out = (out+ 1) % N ;
 				enAttente-- ; 
 			mutex.V();
 			//indique qu'on a lib�r� une place dans le buffeur pour les un Thread Producteur.
@@ -61,11 +60,10 @@ public class ProdCons implements Tampon {
 		Place.P() ;  
 		
 		//section critique proti�g� par les mutex
-		Ob.depotMessage(p, m);
-		buffer[in] = m ;
-		in = (in +1) %N;
 		mutex.P();
-		
+			Ob.depotMessage(p, m);
+			buffer[in] = m ;
+			in = (in +1) %N;
 			enAttente++ ;
 		mutex.V();
 		
@@ -82,22 +80,21 @@ public class ProdCons implements Tampon {
 	}
 
 	public synchronized void nouveau_prod(){
-		if(TestProdCons.outputs) System.out.println("le poducteur "+ nbProd+" rentre dans le game");
 		nbProd++;
+		if(TestProdCons.outputs) System.out.println("le poducteur "+ nbProd +" rentre dans le game");
 //		System.out.println(nbProd);
 		
 	}
 	public synchronized void fin_prod(){
 		
-		nbProd-- ; 
 		if(TestProdCons.outputs) System.out.println("le poducteur "+ nbProd+" sort de la game");
+		nbProd-- ; 
 	}
 	
 	// return vrai si il n'y a plus de pproducteur et que le bufer est vide
 	public synchronized boolean fin() {
 		boolean resultat = ((nbProd == 0) && ( enAttente == 0 ));
-		//if(TestProdCons.outPuts)  System.out.println("resultat fin = "+ resultat);
-		
+
 		if(resultat){
 			RessourceALire.V(); //libère les consommateurs en attente d'un message qui ne viendra plus. 
 		}
