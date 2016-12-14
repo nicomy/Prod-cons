@@ -43,12 +43,10 @@ public class Consommateur extends Acteur implements _Consommateur {
 			
 			try {
 				
-				// le synchronise sert pour afficher dans le bon odre les �l�ments. 
 				m = (MessageX) buffer.get(this);
 				if(TestProdCons.outputs) blabla(m);
 				if(m!=null) {
 					nbMessagelu++ ;
-					((MessageX) m).setConsomation(new Date());
 				}
 				
 				 

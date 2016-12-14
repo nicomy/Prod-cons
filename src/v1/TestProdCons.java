@@ -60,7 +60,6 @@ public class TestProdCons extends Simulateur {
 	}
 	
 	
-	// On lance chaqu'un des consomateurs dans lcons et producteur dans lprod  
 	protected void run() throws Exception{
 		
 		for (int i=0;i<nbProd;i++){
@@ -76,7 +75,6 @@ public class TestProdCons extends Simulateur {
 		
 	}	
 	
-//	protected <type> option;
 	
 	/**
 	* Retreave the parameters of the application.

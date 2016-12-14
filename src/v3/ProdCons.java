@@ -35,9 +35,9 @@ public class ProdCons implements Tampon {
 		RessourceALire.P() ; 
 		Message m;
 			
-		// gestion du buffer prot�g� par les mutex
 		
 		if(enAttente>0){
+			// gestion du buffer prot�g� par les mutex
 			mutex.P();
 				m = buffer[out];
 				Ob.retraitMessage(c, m);
@@ -56,7 +56,7 @@ public class ProdCons implements Tampon {
 	// fonction permettant de d�poser une ressource dans le tampon. 
 	public void put(_Producteur p, Message m) throws Exception, InterruptedException {
 		
-		// on s'assure qu'il y a de la place pour y palcer une ressource 
+		// on s'assure qu'il y a de la place pour y placer une ressource 
 		Place.P() ;  
 		
 		//section critique proti�g� par les mutex

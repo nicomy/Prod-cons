@@ -44,7 +44,6 @@ public class Producteur extends Acteur implements _Producteur{
 			MessageX m = new MessageX(identification()*100+i,"contenu du message ");
 			
 			int temps= alea.next();
-			// if(TestProdCons.outputs) System.out.println("temps = "+ temps);
 			try {
 				Ob.productionMessage(this, m, temps);
 			} catch (ControlException e2) {

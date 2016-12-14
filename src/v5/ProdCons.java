@@ -14,9 +14,6 @@ public class ProdCons implements Tampon {
 	private int N, enAttente ; // N est le nombre maximum de messages que peut contenir le buffer. 
 
 	private int in = 0 , out = 0,nbProd = 0 ; 
-//	private Semaphore mutex ; 
-//	private Semaphore RessourceALire ; 
-//	private Semaphore Place ; 
 	private Observateur Ob ; 
 	private Message[] buffer ;
 	final Lock lock = new ReentrantLock();
@@ -29,9 +26,6 @@ public class ProdCons implements Tampon {
 		N = n ;
 		enAttente = 0 ; 
 		buffer = new Message[N];
-//		mutex = new Semaphore(1);
-//		RessourceALire = new Semaphore(0);
-//		Place = new Semaphore(N);
 		Ob = observateur ; 
 		
 	}
@@ -94,7 +88,6 @@ public class ProdCons implements Tampon {
 		if(TestProdCons.outputs) System.out.println("le poducteur "+ nbProd+" rentre dans le game");
 		nbProd++;
 		lock.unlock();
-//		System.out.println(nbProd);
 		
 	}
 	public void fin_prod(){

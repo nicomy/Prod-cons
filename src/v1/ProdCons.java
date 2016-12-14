@@ -39,18 +39,14 @@ public class ProdCons implements Tampon {
 	
 	// fonction permettant de retirer une ressource dans le tampon. 
 	public Message get(_Consommateur c) throws Exception, InterruptedException {
-		// tant qu'il n'y a rien a lire le processus attend. 
-//		if(TestProdCons.outputs) System.out.println("coucou je suis le consomateur "+ ((Consommateur) c).get_id() );
+
 		Message m;
 		synchronized (mc){
-			// gestion du buffer
-			while (nbplein == 0 && !fin()) mc.wait() ; 
+			while (nbplein == 0 && !fin()) mc.wait() ; //s'il n'y pas de message, cons attend
 			
 			if(nbplein>0){
 				m= buffer[out];
-				((MessageX) m).setLecture(new Date()); 
 				out = (out+1 ) % N ;
-				//on d�cremente le nombre de ressource dispo
 				nbplein -- ;
 				
 			}else{ 		
@@ -59,8 +55,6 @@ public class ProdCons implements Tampon {
 			
 		}
 		synchronized(mp){nbvide++; mp.notifyAll();}
-		
-	//		System.out.println("aurevoir je suis le consomateur "+ ((Consommateur) c).get_id() );
 		return m;
 	}
 	
@@ -74,7 +68,6 @@ public class ProdCons implements Tampon {
 			l_mes.add((MessageX) m);
 			//mettre a jour le buffer 
 			buffer[in] = m ;
-			((MessageX) m).setEcriture(new Date());
 			in = (in +1) %N;
 	
 				//on incremente le nombre de ressource dispo 
@@ -91,7 +84,6 @@ public class ProdCons implements Tampon {
 	public synchronized void nouveau_prod(){
 		if(TestProdCons.outputs) System.out.println("le poducteur "+ nbProd+" rentre dans le game");
 		nbProd++;
-//		if(TestProdCons.outputs) System.out.println(nbProd);
 		
 	}
 	public synchronized void fin_prod(){
@@ -99,12 +91,9 @@ public class ProdCons implements Tampon {
 		if(TestProdCons.outputs) System.out.println("le poducteur "+ nbProd+" sort de la game");
 	}
 	
-	// return vrai si il n'y a plus de pproducteur et que le bufer est vide
+	// return vrai si il n'y a plus de producteur et que le bufer est vide
 	public boolean fin() {
 		boolean resultat = ((nbProd == 0) && ( nbplein == 0 ));
-		//if(TestProdCons.outputs) System.out.println("resultat fin = "+ resultat);
-		
-		
 		
 		if(resultat){
 			synchronized(mc){mc.notify();} //libère les consommateurs en attente d'un message qui ne viendra plus. 
@@ -112,17 +101,5 @@ public class ProdCons implements Tampon {
 		
 		return (nbProd == 0) && ( nbplein == 0 );
 	} 
-	
-	
-	public void test( Date date_fin){
-		boolean ordreConsomattion_Correct = true ; 
-		
-	
-		
-		
-		
-	}
-	
-	
 	
 }

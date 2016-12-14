@@ -75,12 +75,9 @@ public class TestProdCons extends Simulateur {
 	protected void run() throws Exception{
 		
 		for (int i=0;i<nbProd;i++){
-//			if (lprod.get(i)==null) System.out.println("on peut pas acceder � un Prdo\n");
-//			else System.out.println(lprod.get(i).toString());
 			lprod.get(i).start();
 		}
 		for (int i=0;i<nbCons;i++){
-//			System.out.println(c.get(i).toString());
 			lcons.get(i).start();
 		}	
 		
@@ -118,8 +115,6 @@ public class TestProdCons extends Simulateur {
 		nombreMoyenDeProduction = option.get("nombreMoyenDeProduction");
 		deviationNombreMoyenDeProduction = option.get("deviationNombreMoyenDeProduction");
 	}
-//	
-//	<option> = option.getProperty("option");
 	
 	
 	public static void main(String[] args){new TestProdCons(new Observateur()).start();}

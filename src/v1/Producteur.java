@@ -22,10 +22,10 @@ public class Producteur extends Acteur implements _Producteur{
 		
 		super(Acteur.typeProducteur, observateur, moyenneTempsDeTraitement, deviationTempsDeTraitement);
 		
-		// On g�n�re al�toirement le nombre de messages � faire 
+		// On genere aletoirement le nombre de messages a faire 
 		nbMessageafaire = nbm ; 
 		
-		//on d�finit un objet al�toire pour indiquer quand envoyer un message.
+		//on definit un objet aletoire pour indiquer quand envoyer un message.
 		alea = new Aleatoire(moyenneTempsDeTraitement,deviationTempsDeTraitement);
 		buffer = buf ; 
 		

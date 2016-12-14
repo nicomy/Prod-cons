@@ -112,7 +112,6 @@ public class ProdCons implements Tampon {
 	public synchronized void nouveau_prod(){
 		nbProd++;
 		if(TestProdCons.outputs) System.out.println("le poducteur "+ nbProd+" rentre dans le game");
-//		System.out.println(nbProd);
 		
 	}
 	public synchronized void fin_prod(){
@@ -124,7 +123,6 @@ public class ProdCons implements Tampon {
 	// return vrai si il n'y a plus de pproducteur et que le bufer est vide
 	public synchronized boolean fin() {
 		boolean resultat = ((nbProd == 0) && ( enAttente == 0 ));
-		//if(TestProdCons.outPuts)  System.out.println("resultat fin = "+ resultat);
 		
 		if(resultat){
 			RessourceALire.V(); //libère les consommateurs en attente d'un message qui ne viendra plus. 
